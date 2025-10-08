@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hammered Dulcimer Chord Finder</title>
+    <style>
+        :root {
+            --base-font-size: 1rem;      /* 16px base */
+            --string-font-size: 1rem;    /* String labels */
+            --string-height: 26px;       /* Desktop string height */
+            --string-gap: 8px;           /* Gap between strings */
+            --string-spacing: 34px;      /* Total string spacing (height + gap) */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        select, button {
+            padding: 12px 20px;
+            font-size: var(--base-font-size);
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        select:focus, button:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        select:hover, button:hover {
+            border-color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .chord-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .chord-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .chord-notes-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .chord-notes {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        #play-chord {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+        }
+
+        .dulcimer-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, #8B4513 0%, #A0522D 100%);
+            border-radius: 15px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            min-height: 600px;
+        }
+
+        .bridge-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bridge-label {
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            writing-mode: horizontal-tb;
+        }
+
+        .bridge {
+            position: relative;
+            background: #654321;
+            width: 8px;
+            height: 100%;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        .bridge-marker {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            border: 1px solid #333;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .strings-column {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: flex-start;
+        }
+
+        .bridge-section {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .bridge-section.low-bass {
+            align-items: flex-start;
+        }
+
+        .bridge-section.low-bass .strings-column {
+            /* Offset by 9 strings: 9 × (26px height + 8px gap) = 306px */
+            padding-top: 306px;
+        }
+
+        .strings-left {
+            order: 1;
+        }
+
+        .bridge-middle {
+            order: 2;
+        }
+
+        .strings-right {
+            order: 3;
+        }
+
+        .string {
+            width: 50px;
+            height: 26px;
+            background: linear-gradient(to right, #C0C0C0 0%, #E8E8E8 50%, #C0C0C0 100%);
+            border: 1px solid #999;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--string-font-size);
+            font-weight: bold;
+            color: #222;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .string:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .string:active {
+            transform: scale(0.98);
+        }
+
+        .string.active {
+            background: linear-gradient(to bottom, #4CAF50 0%, #66BB6A 50%, #4CAF50 100%);
+            border-color: #2E7D32;
+            color: white;
+            font-weight: bold;
+            animation: pulse 0.3s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .note-label {
+            position: absolute;
+            font-size: 0.75rem;
+            color: #888;
+            bottom: 2px;
+            opacity: 0.7;
+        }
+
+        .string.active .note-label {
+            color: white;
+            opacity: 1;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --string-height: 22px;
+                --string-spacing: 30px;  /* 22px height + 8px gap */
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .control-group {
+                flex: 1 1 calc(50% - 5px);
+                min-width: 150px;
+            }
+
+            .control-group:first-child {
+                flex: 1 1 100%;
+            }
+
+            select, button {
+                width: 100%;
+            }
+
+            .dulcimer-container {
+                padding: 20px 10px;
+                gap: 15px;
+                min-height: 500px;
+            }
+
+            .string {
+                width: 40px;
+                height: 22px;
+                font-size: 0.75rem;
+            }
+
+            .bridge-label {
+                font-size: 0.85rem;
+            }
+
+            .chord-name {
+                font-size: 1.4rem;
+            }
+
+            .chord-notes {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --string-height: 20px;
+                --string-spacing: 28px;  /* 20px height + 8px gap */
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .string {
+                width: 32px;
+                height: 20px;
+                font-size: 0.65rem;
+            }
+
+            .dulcimer-container {
+                gap: 10px;
+                padding: 15px 5px;
+            }
+
+            .bridge-section {
+                gap: 8px;
+            }
+
+            .bridge-label {
+                font-size: 0.75rem;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Hammered Dulcimer Chord Finder</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="instrument-select">Instrument</label>
+                <select id="instrument-select">
+                    <!-- Populated by JavaScript -->
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="root-note">Root Note</label>
+                <select id="root-note">
+                    <option value="C">C</option>
+                    <option value="C#">C♯/D♭</option>
+                    <option value="D">D</option>
+                    <option value="D#">D♯/E♭</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="F#">F♯/G♭</option>
+                    <option value="G">G</option>
+                    <option value="G#">G♯/A♭</option>
+                    <option value="A">A</option>
+                    <option value="A#">A♯/B♭</option>
+                    <option value="B">B</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="chord-type">Chord Type</label>
+                <select id="chord-type">
+                    <option value="major">Major</option>
+                    <option value="minor">Minor</option>
+                    <option value="diminished">Diminished</option>
+                    <option value="augmented">Augmented</option>
+                    <option value="sus2">Sus2</option>
+                    <option value="sus4">Sus4</option>
+                    <option value="power5">5 (Power Chord)</option>
+                    <option value="major6">Major 6th</option>
+                    <option value="minor6">Minor 6th</option>
+                    <option value="major7">Major 7th</option>
+                    <option value="minor7">Minor 7th</option>
+                    <option value="dominant7">Dominant 7th</option>
+                    <option value="diminished7">Diminished 7th</option>
+                    <option value="7sus4">7sus4</option>
+                    <option value="minor7b5">Minor 7th ♭5</option>
+                    <option value="7b5">7th ♭5</option>
+                    <option value="7b9">7th ♭9</option>
+                    <option value="7sharp9">7th ♯9</option>
+                    <option value="major9">Major 9th</option>
+                    <option value="minor9">Minor 9th</option>
+                    <option value="dominant9">Dominant 9th</option>
+                    <option value="add9">Add9</option>
+                    <option value="6add9">6/9</option>
+                    <option value="major11">Major 11th</option>
+                    <option value="minor11">Minor 11th</option>
+                    <option value="dominant11">Dominant 11th</option>
+                    <option value="major13">Major 13th</option>
+                    <option value="minor13">Minor 13th</option>
+                    <option value="dominant13">Dominant 13th</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="chord-info">
+            <div class="chord-name" id="chord-name">C Major</div>
+            <div class="chord-notes-container">
+                <div class="chord-notes" id="chord-notes">Notes: C, E, G</div>
+                <button id="play-chord">▶ Play</button>
+            </div>
+        </div>
+
+        <div class="dulcimer-container" id="dulcimer">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <div class="footer">
+        17/16/8 Finch Chromatic Hammered Dulcimer • Click strings to hear notes
+    </div>
+
+    <script>
+        // Note frequencies (A4 = 440Hz)
+        const noteFrequencies = {
+            'C': [16.35, 32.70, 65.41, 130.81, 261.63, 523.25, 1046.50, 2093.00],
+            'C#': [17.32, 34.65, 69.30, 138.59, 277.18, 554.37, 1108.73, 2217.46],
+            'D': [18.35, 36.71, 73.42, 146.83, 293.66, 587.33, 1174.66, 2349.32],
+            'D#': [19.45, 38.89, 77.78, 155.56, 311.13, 622.25, 1244.51, 2489.02],
+            'E': [20.60, 41.20, 82.41, 164.81, 329.63, 659.25, 1318.51, 2637.02],
+            'F': [21.83, 43.65, 87.31, 174.61, 349.23, 698.46, 1396.91, 2793.83],
+            'F#': [23.12, 46.25, 92.50, 185.00, 369.99, 739.99, 1479.98, 2959.96],
+            'G': [24.50, 49.00, 98.00, 196.00, 392.00, 783.99, 1567.98, 3135.96],
+            'G#': [25.96, 51.91, 103.83, 207.65, 415.30, 830.61, 1661.22, 3322.44],
+            'A': [27.50, 55.00, 110.00, 220.00, 440.00, 880.00, 1760.00, 3520.00],
+            'A#': [29.14, 58.27, 116.54, 233.08, 466.16, 932.33, 1864.66, 3729.31],
+            'B': [30.87, 61.74, 123.47, 246.94, 493.88, 987.77, 1975.53, 3951.07]
+        };
+
+        const markerOffset = 6; // pixels to center markers on strings
+
+        // Instrument configurations
+        // Bridges are rendered left-to-right in array order
+        const instruments = [
+            {
+                id: 'songbird-finch-17-16-8',
+                name: 'Songbird 17/16/8 Finch Chromatic',
+                default: true,
+                bridges: [
+                    {
+                        name: 'Low Bass',
+                        notesRight: ['Bb3', 'F3', 'D#3', 'C3', 'A2', 'G2', 'E2', 'D2'],
+                        verticalOffset: 306, // 9 strings × 34px
+                        markers: [1, 3, 6] // F3, C3, E2
+                    },
+                    {
+                        name: 'Treble',
+                        notesLeft: ['D#6', 'D6', 'C#6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
+                        notesRight: ['Bb5', 'G#5', 'F#5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // F5, C5, G4, D4, A3
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['D#6', 'D#5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // Bb4, F4, C4, G3, D3
+                    }
+                ]
+            },
+            {
+                id: 'songbird-finch-17-16',
+                name: 'Songbird 17/16 Finch',
+                default: true,
+                bridges: [
+                        {
+                        name: 'Treble',
+                        notesLeft: ['D#6', 'D6', 'C#6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
+                        notesRight: ['Bb5', 'G#5', 'F#5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // F5, C5, G4, D4, A3
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['D#6', 'D#5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // Bb4, F4, C4, G3, D3
+                    }
+                ]
+            },
+            {
+                id: 'masterworks-dulciforte-xr-r',
+                name: 'Masterworks Dulciforte 20/20 XR-R',
+                default: true,
+                bridges: [
+                    {
+                        name:'High treble',
+                        notesRight: ['A6', 'G#6', 'G6', 'F#6', 'D#6', 'C#6', 'G#5'],
+                        verticalOffset: 0,
+                        markers: [0, 2] // A6, G6
+                    },
+                    {
+                        name: 'Treble',
+                        notesLeft: ['F6', 'E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4', 'C#4', 'B3', 'A#3'],
+                        notesRight: ['Bb5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3', 'F#3', 'E3', 'D#3'],
+                        verticalOffset: 0,
+                        markers: [0, 3, 6, 9, 12, 15, 18] // F6, F5, C5, G4, D4, A3, E3
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['Eb5', 'D5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3', 'C#3', 'B2', 'A2', 'G#2'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // Bb4, F4, C4, G3, D3
+                    },
+                    {
+                        name: 'Low Bass',
+                        notesLeft: ['Bb3', 'F3', 'D#3', 'C3', 'Bb2', 'G2', 'F#2', 'E2', 'D2', 'C#2', 'B1', 'A1'],
+                        verticalOffset: 220,
+                        markers: [0, 1, 3, 5, 8, 11] // Bb3, F3, C3, G2, D2, A1
+                    }
+                ]
+            }
+            // Add more instruments here in the future
+        ];
+
+        // Chord intervals (in semitones from root)
+        const chordTypes = {
+            'major': [0, 4, 7],
+            'minor': [0, 3, 7],
+            'diminished': [0, 3, 6],
+            'augmented': [0, 4, 8],
+            'sus2': [0, 2, 7],
+            'sus4': [0, 5, 7],
+            'power5': [0, 7],
+            'major6': [0, 4, 7, 9],
+            'minor6': [0, 3, 7, 9],
+            'major7': [0, 4, 7, 11],
+            'minor7': [0, 3, 7, 10],
+            'dominant7': [0, 4, 7, 10],
+            'diminished7': [0, 3, 6, 9],
+            '7sus4': [0, 5, 7, 10],
+            'minor7b5': [0, 3, 6, 10],
+            '7b5': [0, 4, 6, 10],
+            '7b9': [0, 4, 7, 10, 13],
+            '7sharp9': [0, 4, 7, 10, 15],
+            'major9': [0, 4, 7, 11, 14],
+            'minor9': [0, 3, 7, 10, 14],
+            'dominant9': [0, 4, 7, 10, 14],
+            'add9': [0, 4, 7, 14],
+            '6add9': [0, 4, 7, 9, 14],
+            'major11': [0, 4, 7, 11, 14, 17],
+            'minor11': [0, 3, 7, 10, 14, 17],
+            'dominant11': [0, 4, 7, 10, 14, 17],
+            'major13': [0, 4, 7, 11, 14, 21],
+            'minor13': [0, 3, 7, 10, 14, 21],
+            'dominant13': [0, 4, 7, 10, 14, 21]
+        };
+
+        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+        // Enharmonic equivalents map
+        const enharmonicMap = {
+            'C#': 'Db', 'Db': 'C#',
+            'D#': 'Eb', 'Eb': 'D#',
+            'F#': 'Gb', 'Gb': 'F#',
+            'G#': 'Ab', 'Ab': 'G#',
+            'A#': 'Bb', 'Bb': 'A#'
+        };
+        // Get current instrument
+        let currentInstrument = null;
+
+        // localStorage works with file:// protocol, unlike cookies
+        function getSavedValue(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                console.warn('localStorage not available:', e);
+                return null;
+            }
+        }
+
+        function setSavedValue(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {
+                console.warn('localStorage not available:', e);
+            }
+        }
+
+        function getDefaultInstrument() {
+            // Check localStorage first
+            const savedId = getSavedValue('selectedInstrument');
+            if (savedId) {
+                const saved = instruments.find(i => i.id === savedId);
+                if (saved) {
+                    return saved;
+                }
+            }
+            // Fall back to default
+            const defaultInst = instruments.find(i => i.default) || instruments[0];
+            return defaultInst;
+        }
+
+        function populateInstrumentSelector() {
+            const select = document.getElementById('instrument-select');
+            select.innerHTML = '';
+            instruments.forEach(instrument => {
+                const option = document.createElement('option');
+                option.value = instrument.id;
+                option.textContent = instrument.name;
+                select.appendChild(option);
+            });
+            select.value = currentInstrument.id;
+        }
+
+       
+
+        // Audio context for sound synthesis
+        let audioContext;
+        let activeOscillators = [];
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function getFrequency(noteName) {
+            const match = noteName.match(/([A-G][#b]?)(\d)/);
+            if (!match) {
+                console.warn(`Invalid note format: "${noteName}"`);
+                return null;
+            }
+            let note = match[1];
+            const octave = parseInt(match[2]);
+            
+            // Convert flat notes to sharp equivalents for frequency lookup
+            if (note.includes('b')) {
+                const sharpEquivalent = enharmonicMap[note];
+                if (sharpEquivalent) {
+                    note = sharpEquivalent;
+                } else {
+                    console.warn(`Unknown flat note: "${note}" in "${noteName}"`);
+                    return null;
+                }
+            }
+            
+            const frequency = noteFrequencies[note]?.[octave];
+            if (!frequency) {
+                console.warn(`No frequency found for note: "${noteName}" (parsed as ${note}${octave})`);
+                return null;
+            }
+            
+            return frequency;
+        }
+
+        function playNote(noteName, duration = 1.0) {
+            initAudio();
+            
+            const frequency = getFrequency(noteName);
+            if (frequency === null) {
+                // Skip playing this note if frequency couldn't be determined
+                return;
+            }
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'triangle'; // Dulcimer-like sound
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+            
+            activeOscillators.push(oscillator);
+            
+            setTimeout(() => {
+                const index = activeOscillators.indexOf(oscillator);
+                if (index > -1) activeOscillators.splice(index, 1);
+            }, duration * 1000);
+        }
+
+        function stopAllNotes() {
+            activeOscillators.forEach(osc => {
+                try { osc.stop(); } catch(e) {}
+            });
+            activeOscillators = [];
+        }
+
+        function buildDulcimer() {
+            const container = document.getElementById('dulcimer');
+            container.innerHTML = '';
+
+            // Get current string spacing from CSS variable
+            const stringSpacing = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--string-spacing'));
+
+            currentInstrument.bridges.forEach(bridgeConfig => {
+                const section = document.createElement('div');
+                section.className = 'bridge-container';
+                
+                const label = document.createElement('div');
+                label.className = 'bridge-label';
+                label.textContent = bridgeConfig.name;
+                section.appendChild(label);
+                
+                const bridgeSection = document.createElement('div');
+                bridgeSection.className = 'bridge-section';
+                
+                // Add special class for bridges with vertical offset
+                if (bridgeConfig.verticalOffset > 0) {
+                    bridgeSection.classList.add('low-bass');
+                }
+                
+                const bridge = document.createElement('div');
+                bridge.className = 'bridge bridge-middle';
+                
+                // Determine which notes array to use for markers
+                const notesForMarkers = bridgeConfig.notesRight || bridgeConfig.notesLeft;
+                
+                // Add markers
+                if (bridgeConfig.markers && bridgeConfig.markers.length > 0 && notesForMarkers) {
+                    bridgeConfig.markers.forEach(idx => {
+                        if (idx < notesForMarkers.length) {
+                            const marker = document.createElement('div');
+                            marker.className = 'bridge-marker';
+                            marker.style.top = (bridgeConfig.verticalOffset + idx * stringSpacing + markerOffset) + 'px';
+                            bridge.appendChild(marker);
+                        }
+                    });
+                }
+                
+                // Build left strings if present
+                if (bridgeConfig.notesLeft) {
+                    const leftStrings = document.createElement('div');
+                    leftStrings.className = 'strings-column strings-left';
+                    if (bridgeConfig.verticalOffset > 0) {
+                        leftStrings.style.paddingTop = bridgeConfig.verticalOffset + 'px';
+                    }
+                    
+                    bridgeConfig.notesLeft.forEach((note, index) => {
+                        const bridgeName = bridgeConfig.name.toLowerCase().replace(' ', '');
+                        const string = createString(note, bridgeName + 'Left', index);
+                        leftStrings.appendChild(string);
+                    });
+                    
+                    bridgeSection.appendChild(leftStrings);
+                }
+                
+                // Add the bridge itself
+                bridgeSection.appendChild(bridge);
+                
+                // Build right strings if present
+                if (bridgeConfig.notesRight) {
+                    const rightStrings = document.createElement('div');
+                    rightStrings.className = 'strings-column strings-right';
+                    if (bridgeConfig.verticalOffset > 0) {
+                        rightStrings.style.paddingTop = bridgeConfig.verticalOffset + 'px';
+                    }
+                    
+                    bridgeConfig.notesRight.forEach((note, index) => {
+                        const bridgeName = bridgeConfig.name.toLowerCase().replace(' ', '');
+                        const string = createString(note, bridgeName + 'Right', index);
+                        rightStrings.appendChild(string);
+                    });
+                    
+                    bridgeSection.appendChild(rightStrings);
+                }
+                
+                section.appendChild(bridgeSection);
+                container.appendChild(section);
+            });
+        }
+
+        function createString(note, bridge, index) {
+            const string = document.createElement('div');
+            string.className = 'string';
+            string.dataset.note = note;
+            string.dataset.bridge = bridge;
+            string.dataset.index = index;
+            
+            const label = document.createElement('div');
+            label.className = 'note-label';
+            // Show full note name with octave (e.g., "C#4" instead of just "C#")
+            label.textContent = note;
+            string.appendChild(label);
+            
+            string.addEventListener('click', () => {
+                playNote(note, 0.8);
+            });
+            
+            return string;
+        }
+
+        function getChordNotes(root, type) {
+            const rootIndex = noteNames.indexOf(root);
+            const intervals = chordTypes[type];
+            return intervals.map(interval => noteNames[(rootIndex + interval) % 12]);
+        }
+
+        function highlightChord() {
+            const root = document.getElementById('root-note').value;
+            const type = document.getElementById('chord-type').value;
+            const chordNotes = getChordNotes(root, type);
+            
+            // Update chord info
+            const chordName = root + ' ' + type.charAt(0).toUpperCase() + type.slice(1).replace(/(\d)/g, ' $1');
+            document.getElementById('chord-name').textContent = chordName;
+            document.getElementById('chord-notes').textContent = 'Notes: ' + chordNotes.join(', ');
+            
+            // Clear all highlights
+            document.querySelectorAll('.string').forEach(string => {
+                string.classList.remove('active');
+                // Always show full note name with octave
+                const fullNote = string.dataset.note;
+                string.querySelector('.note-label').textContent = fullNote;
+            });
+            
+            // Highlight all matching notes across all octaves
+            document.querySelectorAll('.string').forEach(string => {
+                const noteName = string.dataset.note.replace(/\d/, '');
+                // Check for exact match or enharmonic equivalent
+                const isMatch = chordNotes.includes(noteName) || 
+                               (enharmonicMap[noteName] && chordNotes.includes(enharmonicMap[noteName]));
+                if (isMatch) {
+                    string.classList.add('active');
+                    // Note label already shows full note with octave
+                }
+            });
+        }
+
+        function playChord() {
+            const activeStrings = document.querySelectorAll('.string.active');
+            const allNotes = Array.from(activeStrings).map(s => s.dataset.note);
+            
+            // Get unique notes (only one instance of each specific note with octave)
+            const uniqueNotes = [...new Set(allNotes)];
+            
+            // Sort notes from low to high by frequency
+            uniqueNotes.sort((a, b) => {
+                const freqA = getFrequency(a);
+                const freqB = getFrequency(b);
+                // Handle null frequencies by putting them at the end
+                if (freqA === null) return 1;
+                if (freqB === null) return -1;
+                return freqA - freqB;
+            });
+            
+            // Initialize audio context once before playing
+            initAudio();
+            
+            // Play notes with slight delay for arpeggio effect
+            uniqueNotes.forEach((note, index) => {
+                setTimeout(() => playNote(note, 1.5), index * 50);
+            });
+        }
+
+        // Event listeners
+        document.getElementById('root-note').addEventListener('change', highlightChord);
+        document.getElementById('chord-type').addEventListener('change', highlightChord);
+        document.getElementById('play-chord').addEventListener('click', playChord);
+        document.getElementById('instrument-select').addEventListener('change', (e) => {
+            const selectedId = e.target.value;
+            currentInstrument = instruments.find(i => i.id === selectedId);
+            setSavedValue('selectedInstrument', selectedId);
+            buildDulcimer();
+            highlightChord();
+        });
+
+        // Rebuild dulcimer on window resize to adjust marker positions
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                buildDulcimer();
+                highlightChord();
+            }, 250);
+        });
+
+        // Initialize
+        currentInstrument = getDefaultInstrument();
+        populateInstrumentSelector();
+        buildDulcimer();
+        highlightChord();
+
+        // Allow spacebar to play chord
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target.tagName !== 'SELECT') {
+                e.preventDefault();
+                playChord();
+            }
+        });
+    </script>
+</body>
+</html>
