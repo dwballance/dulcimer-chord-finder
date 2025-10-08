@@ -451,7 +451,35 @@
     </div>
 
     <div class="footer">
-        17/16/8 Finch Chromatic Hammered Dulcimer • Click strings to hear notes
+        Hammered Dulcimer Chord Finder • Click strings to hear notes<br>
+        <a href="https://github.com/dwballance/Dulcimer-Chord-Finder/issues/new?template=instrument-request.md" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           style="color: white; text-decoration: underline; margin: 0 10px;">
+            Request Instrument
+        </a> • 
+        <a href="https://github.com/dwballance/Dulcimer-Chord-Finder/issues/new?template=bug-report.md" 
+           target="_blank"
+           rel="noopener noreferrer" 
+           style="color: white; text-decoration: underline; margin: 0 10px;">
+            Report Bug
+        </a> • 
+        <a href="https://github.com/dwballance/Dulcimer-Chord-Finder" 
+           target="_blank"
+           rel="noopener noreferrer" 
+           style="color: white; text-decoration: underline; margin: 0 10px;">
+            View Source
+        </a>
+        <br>
+        <span style="font-size: 0.85rem; opacity: 0.9;">
+            No GitHub account? 
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdiFmni2nnSVDc_xM-JiW5cav6RqslKIAf4dia1EV1u9_K0oA/viewform?usp=dialog",
+               target="_blank"
+               rel="noopener noreferrer" 
+               style="color: white; text-decoration: underline;">
+                Request instruments here
+            </a>
+        </span>
     </div>
 
     <script>
@@ -630,21 +658,32 @@
                     return saved;
                 }
             }
-            // Fall back to default
-            const defaultInst = instruments.find(i => i.default) || instruments[0];
-            return defaultInst;
+            // Return null for fresh loads (will show placeholder)
+            return null;
         }
 
         function populateInstrumentSelector() {
             const select = document.getElementById('instrument-select');
             select.innerHTML = '';
+            
+            // Add placeholder option
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = 'Choose an instrument...';
+            placeholder.disabled = true;
+            placeholder.selected = currentInstrument === null;
+            select.appendChild(placeholder);
+            
+            // Add instrument options
             instruments.forEach(instrument => {
                 const option = document.createElement('option');
                 option.value = instrument.id;
                 option.textContent = instrument.name;
+                if (currentInstrument && currentInstrument.id === instrument.id) {
+                    option.selected = true;
+                }
                 select.appendChild(option);
             });
-            select.value = currentInstrument.id;
         }
 
        
@@ -730,6 +769,15 @@
         function buildDulcimer() {
             const container = document.getElementById('dulcimer');
             container.innerHTML = '';
+            
+            // If no instrument selected, show placeholder message
+            if (!currentInstrument) {
+                const message = document.createElement('div');
+                message.style.cssText = 'text-align: center; color: white; font-size: 1.2rem; padding: 50px;';
+                message.textContent = 'Please select an instrument to begin';
+                container.appendChild(message);
+                return;
+            }
 
             // Get current string spacing from CSS variable
             const stringSpacing = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--string-spacing'));
@@ -846,6 +894,11 @@
             const chordName = root + ' ' + type.charAt(0).toUpperCase() + type.slice(1).replace(/(\d)/g, ' $1');
             document.getElementById('chord-name').textContent = chordName;
             document.getElementById('chord-notes').textContent = 'Notes: ' + chordNotes.join(', ');
+            
+            // If no instrument selected, skip highlighting
+            if (!currentInstrument) {
+                return;
+            }
             
             // Clear all highlights
             document.querySelectorAll('.string').forEach(string => {
