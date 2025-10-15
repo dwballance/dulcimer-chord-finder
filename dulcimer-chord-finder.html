@@ -427,7 +427,19 @@
             font-size: 1.3rem;
         }
     </style>
-    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/soundfont-player@latest/dist/soundfont-player.min.js"></script>
+    <script>
+    const config = {
+        // Google Form URL for requesting new instrument layouts
+        googleFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdiFmni2nnSVDc_xM-JiW5cav6RqslKIAf4dia1EV1u9_K0oA/viewform?usp=dialog",
+        
+        // Other configuration settings can be added here as needed
+        // For example:
+        // githubIssuesUrl: "https://github.com/dwballance/Dulcimer-Chord-Finder/issues/new",
+        // supportEmail: "support@example.com"
+        note_gain: 0.8 // Gain for note playback (0.0 to 1.0)
+    };
+    </script>
 </head>
 <body>
     <div class="container">
@@ -814,11 +826,29 @@
 
         // Audio context for sound synthesis
         let audioContext;
+        let soundfontPlayer;
+        let isLoadingInstrument = false;
+        let soundfontLoadFailed = false;
         let activeOscillators = [];
 
-        function initAudio() {
+        async function initAudio() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            if (!soundfontPlayer && !isLoadingInstrument && !soundfontLoadFailed) {
+                isLoadingInstrument = true;
+                try {
+                    // Load the dulcimer soundfont
+                    console.log('Loading dulcimer soundfont...');
+                    soundfontPlayer = await Soundfont.instrument(audioContext, 'dulcimer');
+                    console.log('Dulcimer soundfont loaded successfully');
+                } catch (error) {
+                    console.error('Failed to load soundfont, will use fallback oscillator:', error);
+                    soundfontLoadFailed = true;
+                } finally {
+                    isLoadingInstrument = false;
+                }
             }
         }
 
@@ -851,12 +881,10 @@
             return frequency;
         }
 
-        function playNote(noteName, duration = 1.0) {
-            initAudio();
-            
+        function playNoteWithOscillator(noteName, duration = 1.0) {
+            // Fallback: Use triangle wave oscillator
             const frequency = getFrequency(noteName);
             if (frequency === null) {
-                // Skip playing this note if frequency couldn't be determined
                 return;
             }
             
@@ -883,7 +911,52 @@
             }, duration * 1000);
         }
 
+        function playNote(noteName, duration = 1.0) {
+            // Initialize audio if not already done
+            if (!audioContext) {
+                initAudio();
+            }
+            
+            // Use soundfont if available, otherwise fall back to oscillator
+            if (soundfontPlayer) {
+                try {
+                    // Soundfont.js uses note names like "C4", "A#5", etc.
+                    // Convert flat notes to sharp for compatibility
+                    let processedNote = noteName;
+                    if (noteName.includes('b')) {
+                        const match = noteName.match(/([A-G])b(\d)/);
+                        if (match) {
+                            const flatNote = match[1] + 'b';
+                            const octave = match[2];
+                            const sharpEquivalent = enharmonicMap[flatNote];
+                            if (sharpEquivalent) {
+                                processedNote = sharpEquivalent + octave;
+                            }
+                        }
+                    }
+                    
+                    soundfontPlayer.play(processedNote, audioContext.currentTime, {
+                        duration: duration,
+                        gain: config.note_gain  // Volume (0.0 to 1.0)
+                    });
+                } catch (error) {
+                    console.error(`Error playing note ${noteName} with soundfont, falling back to oscillator:`, error);
+                    playNoteWithOscillator(noteName, duration);
+                }
+            } else if (soundfontLoadFailed) {
+                // Soundfont failed to load, use oscillator fallback
+                playNoteWithOscillator(noteName, duration);
+            } else {
+                // Soundfont still loading, wait and try again
+                console.warn('Soundfont not loaded yet, using oscillator fallback...');
+                playNoteWithOscillator(noteName, duration);
+            }
+        }
+
         function stopAllNotes() {
+            if (soundfontPlayer) {
+                soundfontPlayer.stop();
+            }
             activeOscillators.forEach(osc => {
                 try { osc.stop(); } catch(e) {}
             });
@@ -1258,6 +1331,9 @@
 
         // Initialize
         currentInstrument = getDefaultInstrument();
+        
+        // Initialize audio early to load soundfont
+        initAudio();
         
         // Log validation warnings for the default instrument
         // (warnings will be displayed in a banner in the buildDulcimer function)
