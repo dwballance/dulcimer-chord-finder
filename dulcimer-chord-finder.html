@@ -583,6 +583,32 @@
                     }
                 ]
             },
+             {
+                id: 'clound-nine-17-16-8',
+                name: 'Cloud Nine 17/16/8',
+                default: true,
+                bridges: [
+                    {
+                        name: 'Low Bass',
+                        notesRight: ['Bb3', 'F3', 'D#3', 'C#3', 'C3', 'B2', 'A2', 'G2'],
+                        verticalOffset: 9, // 9 strings
+                        markers: [1, 4, 7] // F3, C3, E2
+                    },
+                    {
+                        name: 'Treble',
+                        notesLeft: ['G6', 'E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
+                        notesRight: ['C#6', 'Bb6', 'G5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // F5, C5, G4, D4, A3
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['G#5', 'D#5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // Bb4, F4, C4, G3, D3
+                    }
+                ]
+            },
            {
                 id: 'davids-spinet-1615',
                 name: 'David\'s Dulcimers Spinet 16/15',
@@ -635,6 +661,38 @@
                     }
                 ],
             },
+            {
+                id: 'dusty-strings-570',
+                name: 'Dusty Strings 570 16/15/8/8',
+                default: true,
+                bridges: [
+                    {
+                        name: 'Left Bass',
+                        notesRight: ['D#6', 'C#6', null, null, null, null, null, null, 'Bb3', 'F3', 'D#3', 'C#3', 'C3', 'B2', 'A2', 'G2'],
+                        verticalOffset: 0, // 10 strings
+                        markers: [9,12,15] // Mark white keys
+                    },
+                    {
+                        name: 'Treble',
+                        notesLeft: ['E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
+                        notesRight: ['Bb5', 'G#5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        verticalOffset: 0,
+                        markers: [2, 5, 8, 11, 14] // C6, G5, D5, A4, E4
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['D#5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3'],
+                        verticalOffset: 0,
+                        markers: [2, 5, 8, 11, 14] // Bb4, F4, C4, G3, D3
+                    },
+                    {
+                        name: 'Right Bass',
+                        notesLeft: ['Bb3', 'F3', 'D#3', 'C#3', 'C3', 'B2', 'A2', 'G2'],
+                        verticalOffset: 7, // 10 strings
+                        markers: [1,4,7] // Mark white keys
+                    }
+                ]
+            },
            {
                 id: 'dusty-strings-d45',
                 name: 'Dusty Strings D45 16/15',
@@ -655,6 +713,7 @@
                     }
                 ]
             },
+            
             {
                 id: 'dusty-strings-overture',
                 name: 'Dusty Strings Overture 16/15',
@@ -735,6 +794,38 @@
                         notesLeft: ['Bb3', 'F3', 'D#3', 'C3', 'Bb2', 'G2', 'F#2', 'E2', 'D2', 'C#2', 'B1', 'A1'],
                         verticalOffset: 8, // 8 strings
                         markers: [0, 1, 3, 5, 8, 11] // Bb3, F3, C3, G2, D2, A1
+                    }
+                ]
+            },
+            {
+                id: 'masterworks-russell-cook-1717xr',
+                name: 'Masterworks Russell Cook 17/17 XR-Right',
+                default: true,
+                bridges: [
+                    {
+                        name:'High treble',
+                        notesRight: ['A6', 'G6', 'F#6', 'D#6', 'C#6', 'G#5'],
+                        verticalOffset: 0,
+                        markers: [0, 3] // A6, G6
+                    },
+                    {
+                        name: 'Treble',
+                        notesLeft: ['F6', 'E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
+                        notesRight: ['Bb5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        verticalOffset: 0,
+                        markers: [0, 3, 6, 9, 12, 15] // F6, F5, C5, G4, D4, A3, E3
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['Eb5', 'D5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3', 'A2'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // Bb4, F4, C4, G3, D3
+                    },
+                    {
+                        name: 'Low Bass',
+                        notesLeft: ['Bb3', 'F3', 'D#3', 'C3', 'B2', 'A2', 'G2', 'F#2', 'E2', 'D2'],
+                        verticalOffset: 7, // 8 strings
+                        markers: [0, 1, 3, 6,9] // Bb3, F3, C3, G2, D2, A1
                     }
                 ]
             },
@@ -1172,6 +1263,16 @@
         }
 
         function createString(note, bridge, index) {
+            // Handle empty cells - return an invisible spacer element
+            if (!note || note === '') {
+                const spacer = document.createElement('div');
+                spacer.className = 'string-spacer';
+                spacer.style.height = 'var(--string-height)';
+                spacer.style.width = '50px';
+                spacer.style.visibility = 'hidden';
+                return spacer;
+            }
+            
             const string = document.createElement('div');
             string.className = 'string';
             string.dataset.note = note;
@@ -1307,6 +1408,7 @@
                     } else if (bridge.notesLeft.length === 0) {
                         bridgeErrors.push(`"${bridgeName}" notesLeft array is empty.`);
                     }
+                    // Note: Empty strings/null values are now allowed for spacing
                 }
 
                 // Validate notesRight if present
@@ -1316,6 +1418,7 @@
                     } else if (bridge.notesRight.length === 0) {
                         bridgeErrors.push(`"${bridgeName}" notesRight array is empty.`);
                     }
+                    // Note: Empty strings/null values are now allowed for spacing
                 }
 
                 // Validate markers if present
