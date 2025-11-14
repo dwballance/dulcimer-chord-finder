@@ -1105,6 +1105,16 @@
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
             
+            // iOS Safari requires AudioContext to be resumed on user interaction
+            if (audioContext.state === 'suspended') {
+                try {
+                    await audioContext.resume();
+                    console.log('AudioContext resumed successfully');
+                } catch (error) {
+                    console.error('Failed to resume AudioContext:', error);
+                }
+            }
+            
             if (!soundfontPlayer && !isLoadingInstrument && !soundfontLoadFailed) {
                 isLoadingInstrument = true;
                 try {
@@ -1180,10 +1190,13 @@
             }, duration * 1000);
         }
 
-        function playNote(noteName, duration = 1.0) {
+        async function playNote(noteName, duration = 1.0) {
             // Initialize audio if not already done
             if (!audioContext) {
-                initAudio();
+                await initAudio();
+            } else if (audioContext.state === 'suspended') {
+                // Resume context if it was suspended (iOS requirement)
+                await audioContext.resume();
             }
             
             // Use soundfont if available, otherwise fall back to oscillator
@@ -1390,8 +1403,8 @@
             label.textContent = note;
             string.appendChild(label);
             
-            string.addEventListener('click', () => {
-                playNote(note, 0.8);
+            string.addEventListener('click', async () => {
+                await playNote(note, 0.8);
             });
             
             return string;
@@ -1439,7 +1452,7 @@
             });
         }
 
-        function playChord() {
+        async function playChord() {
             const activeStrings = document.querySelectorAll('.string.active');
             const allNotes = Array.from(activeStrings).map(s => s.dataset.note);
             
@@ -1457,7 +1470,7 @@
             });
             
             // Initialize audio context once before playing
-            initAudio();
+            await initAudio();
             
             // Play notes with slight delay for arpeggio effect
             uniqueNotes.forEach((note, index) => {
