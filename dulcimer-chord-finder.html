@@ -667,7 +667,7 @@
                 default: true,
                 bridges: [
                     {
-                        name: 'Left Bass',
+                        name: 'Left Chromatic and Super Bass',
                         notesRight: ['D#6', 'C#6', null, null, null, null, null, null, 'Bb3', 'F3', 'D#3', 'C#3', 'C3', 'B2', 'A2', 'G2'],
                         verticalOffset: 0, // 10 strings
                         markers: [9,12,15] // Mark white keys
@@ -686,10 +686,42 @@
                         markers: [2, 5, 8, 11, 14] // Bb4, F4, C4, G3, D3
                     },
                     {
-                        name: 'Right Bass',
+                        name: 'Right Super Bass',
                         notesLeft: ['Bb3', 'F3', 'D#3', 'C#3', 'C3', 'B2', 'A2', 'G2'],
                         verticalOffset: 7, // 10 strings
                         markers: [1,4,7] // Mark white keys
+                    }
+                ]
+            },
+            {
+                id: 'dusty-strings-670',
+                name: 'Dusty Strings 670 19/18/9/9',
+                default: true,
+                bridges: [
+                    {
+                        name: 'Left Chromatic and Super Bass',
+                        notesRight: ['D#6', 'C#6', null, null, null, null, null, null, null, 'F3', 'C3', 'G2', 'F#2', 'E2', 'D2', 'C#2', 'B1', 'A1'],
+                        verticalOffset: 0, // 10 strings
+                        markers: [9,10,11,14,17] // Mark white keys
+                    },
+                    {
+                        name: 'Treble',
+                        notesLeft: ['E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4', 'C#4', 'B3', 'A#3'],
+                        notesRight: ['Bb5', 'G#5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3', 'F#3', 'E3', 'D#3'],
+                        verticalOffset: 0,
+                        markers: [2, 5, 8, 11, 14, 17] // C6, G5, D5, A4, E4
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['D#5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3', 'C#3', 'B2', 'A2'],
+                        verticalOffset: 0,
+                        markers: [2, 5, 8, 11, 14, 17] // Bb4, F4, C4, G3, D3
+                    },
+                    {
+                        name: 'Right Super Bass',
+                        notesLeft: ['F3', 'C3', 'G2', 'F#2', 'E2', 'D2', 'C#2', 'B1', 'A1'],
+                        verticalOffset: 9, // 10 strings
+                        markers: [0,1,2,5,8] // Mark white keys
                     }
                 ]
             },
@@ -766,6 +798,38 @@
                 ]
             },
             {
+                id: 'james-jones-3-16-18-9',
+                name: 'James Jones Custom Performance - 3/16/18/9',
+                default: true,
+                bridges: [
+                    {
+                        name:'High treble',
+                        notesRight: ['F6', 'D#6', 'C#6'],
+                        verticalOffset: 0,
+                        markers: [0] // A6, G6
+                    },
+                    {
+                        name: 'Treble',
+                        notesLeft: ['E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
+                        notesRight: ['A#5', 'G#5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        verticalOffset: 0,
+                        markers: [2,5,8,11,14] // F6, F5, C5, G4, D4, A3, E3
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['D#5', 'C#5', 'A#4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3', 'C#3', 'B2', 'A2'],
+                        verticalOffset: 0,
+                        markers: [2,5,8,11,14] // Bb4, F4, C4, G3, D3
+                    },
+                    {
+                        name: 'Low Bass',
+                        notesLeft: ['A#3', 'F3', 'D#3', 'C3', 'A#2', 'G2', 'F#2', 'E2', 'D2'],
+                        verticalOffset: 9, // 8 strings
+                        markers: [1,3,5,8] // Bb3, F3, C3, G2, D2, A1
+                    }
+                ]
+            },
+            {
                 id: 'masterworks-dulciforte-xr-r',
                 name: 'Masterworks Dulciforte 20/20 XR-R',
                 default: true,
@@ -798,6 +862,26 @@
                 ]
             },
             {
+                id: 'masterworks-pioneer',
+                name: 'Masterworks Pioneer 16/15p',
+                default: true,
+                bridges: [
+                    {
+                        name: 'Treble',
+                        notesLeft: ['E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
+                        notesRight: ['Bb5', 'G#5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        verticalOffset: 0,
+                        markers: [2,5,8,11,14] 
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['D#5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3'],
+                        verticalOffset: 0,
+                        markers: [2,5,8,11,14] 
+                    }
+                ]
+            },
+            {
                 id: 'masterworks-russell-cook-1717xr',
                 name: 'Masterworks Russell Cook 17/17 XR-Right',
                 default: true,
@@ -826,6 +910,27 @@
                         notesLeft: ['Bb3', 'F3', 'D#3', 'C3', 'B2', 'A2', 'G2', 'F#2', 'E2', 'D2'],
                         verticalOffset: 7, // 8 strings
                         markers: [0, 1, 3, 6,9] // Bb3, F3, C3, G2, D2, A1
+                    }
+                ]
+            },
+            {
+                id: 'rick-thum-pro-17-17',
+                name: 'Rick Thum Pro 17/17 - DRAFT',
+                default: true,
+                bridges: [
+                    
+                    {
+                        name: 'Treble',
+                        notesLeft: ['G6', 'E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
+                        notesRight: ['C#6', 'Bb6', 'G5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // F5, C5, G4, D4, A3
+                    },
+                    {
+                        name: 'Bass',
+                        notesLeft: ['G#5', 'D#5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3', 'C#3'],
+                        verticalOffset: 0,
+                        markers: [3, 6, 9, 12, 15] // Bb4, F4, C4, G3, D3
                     }
                 ]
             },
