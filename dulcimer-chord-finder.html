@@ -132,7 +132,8 @@
             color: #666;
         }
 
-        #play-chord {
+        #play-chord-fast,
+        #play-chord-slow {
             padding: 8px 16px;
             font-size: 0.875rem;
         }
@@ -656,7 +657,8 @@
             <div class="chord-name" id="chord-name">C Major</div>
             <div class="chord-notes-container">
                 <div class="chord-notes" id="chord-notes">Notes: C, E, G</div>
-                <button id="play-chord">▶ Play</button>
+                <button id="play-chord-fast">▶ Fast</button>
+                <button id="play-chord-slow">▶ Slow</button>
             </div>
         </div>
 
@@ -1498,6 +1500,17 @@
                 await audioContext.resume();
             }
             
+            // If soundfont is still loading, wait for it to finish
+            if (isLoadingInstrument) {
+                console.log('Waiting for soundfont to load...');
+                // Wait up to 5 seconds for soundfont to load
+                const maxWaitTime = 5000;
+                const startTime = Date.now();
+                while (isLoadingInstrument && (Date.now() - startTime) < maxWaitTime) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+            
             // Use soundfont if available, otherwise fall back to oscillator
             if (soundfontPlayer) {
                 try {
@@ -1528,7 +1541,7 @@
                 // Soundfont failed to load, use oscillator fallback
                 playNoteWithOscillator(noteName, duration);
             } else {
-                // Soundfont still loading, wait and try again
+                // Soundfont still not loaded after waiting, use oscillator fallback
                 console.warn('Soundfont not loaded yet, using oscillator fallback...');
                 playNoteWithOscillator(noteName, duration);
             }
@@ -1751,7 +1764,7 @@
             });
         }
 
-        async function playChord() {
+        async function playChord(delayMs = 50) {
             const activeStrings = document.querySelectorAll('.string.active');
             const allNotes = Array.from(activeStrings).map(s => s.dataset.note);
             
@@ -1771,10 +1784,18 @@
             // Initialize audio context once before playing
             await initAudio();
             
-            // Play notes with slight delay for arpeggio effect
+            // Play notes with delay for arpeggio effect
             uniqueNotes.forEach((note, index) => {
-                setTimeout(() => playNote(note, 1.5), index * 50);
+                setTimeout(() => playNote(note, 1.5), index * delayMs);
             });
+        }
+
+        async function playChordFast() {
+            await playChord(100); // 50ms delay between notes
+        }
+
+        async function playChordSlow() {
+            await playChord(500); // 500ms delay between notes
         }
 
         // Validate instrument configuration
@@ -1876,7 +1897,8 @@
             setSavedValue('selectedChordType', e.target.value);
             highlightChord();
         });
-        document.getElementById('play-chord').addEventListener('click', playChord);
+        document.getElementById('play-chord-fast').addEventListener('click', playChordFast);
+        document.getElementById('play-chord-slow').addEventListener('click', playChordSlow);
         document.getElementById('instrument-select').addEventListener('change', (e) => {
             const selectedValue = e.target.value;
             
@@ -1925,8 +1947,9 @@
         // Initialize
         currentInstrument = getDefaultInstrument();
         
-        // Initialize audio early to load soundfont
-        initAudio();
+        // Note: Audio initialization is deferred until first user interaction
+        // to avoid browser autoplay policy warnings. Audio will be initialized
+        // automatically when user clicks a note or the play button.
         
         // Log validation warnings for the default instrument
         // (warnings will be displayed in a banner in the buildDulcimer function)
@@ -2049,11 +2072,11 @@
             initSoundBankModal();
         }
 
-        // Allow spacebar to play chord
+        // Allow spacebar to play chord (fast)
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && e.target.tagName !== 'SELECT') {
                 e.preventDefault();
-                playChord();
+                playChordFast();
             }
         });
     </script>
