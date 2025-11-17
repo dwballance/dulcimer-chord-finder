@@ -426,6 +426,148 @@
         .validation-warning-banner .warning-icon {
             font-size: 1.3rem;
         }
+
+        /* Sound bank button styling */
+        .sound-bank-button {
+            background: white;
+            border: 2px solid #ddd;
+            color: #667eea;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sound-bank-button:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .control-group-with-button {
+            display: flex;
+            gap: 5px;
+            align-items: flex-end;
+        }
+
+        /* Sound bank modal styling */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f0f0f0;
+            color: #333;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .sound-bank-list {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .sound-bank-category-header {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .sound-bank-category-header:first-child {
+            margin-top: 0;
+        }
+
+        .sound-bank-item {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .sound-bank-item:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .sound-bank-item.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .sound-bank-item.active:hover {
+            background: #5568d3;
+            border-color: #5568d3;
+        }
+
+        .sound-bank-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/soundfont-player@latest/dist/soundfont-player.min.js"></script>
     <script>
@@ -473,37 +615,40 @@
 
             <div class="control-group">
                 <label for="chord-type">Chord Type</label>
-                <select id="chord-type">
-                    <option value="major">Major</option>
-                    <option value="minor">Minor</option>
-                    <option value="diminished">Diminished</option>
-                    <option value="augmented">Augmented</option>
-                    <option value="sus2">Sus2</option>
-                    <option value="sus4">Sus4</option>
-                    <option value="power5">5 (Power Chord)</option>
-                    <option value="major6">Major 6th</option>
-                    <option value="minor6">Minor 6th</option>
-                    <option value="major7">Major 7th</option>
-                    <option value="minor7">Minor 7th</option>
-                    <option value="dominant7">Dominant 7th</option>
-                    <option value="diminished7">Diminished 7th</option>
-                    <option value="7sus4">7sus4</option>
-                    <option value="minor7b5">Minor 7th ♭5</option>
-                    <option value="7b5">7th ♭5</option>
-                    <option value="7b9">7th ♭9</option>
-                    <option value="7sharp9">7th ♯9</option>
-                    <option value="major9">Major 9th</option>
-                    <option value="minor9">Minor 9th</option>
-                    <option value="dominant9">Dominant 9th</option>
-                    <option value="add9">Add9</option>
-                    <option value="6add9">6/9</option>
-                    <option value="major11">Major 11th</option>
-                    <option value="minor11">Minor 11th</option>
-                    <option value="dominant11">Dominant 11th</option>
-                    <option value="major13">Major 13th</option>
-                    <option value="minor13">Minor 13th</option>
-                    <option value="dominant13">Dominant 13th</option>
-                </select>
+                <div class="control-group-with-button">
+                    <select id="chord-type">
+                        <option value="major">Major</option>
+                        <option value="minor">Minor</option>
+                        <option value="diminished">Diminished</option>
+                        <option value="augmented">Augmented</option>
+                        <option value="sus2">Sus2</option>
+                        <option value="sus4">Sus4</option>
+                        <option value="power5">5 (Power Chord)</option>
+                        <option value="major6">Major 6th</option>
+                        <option value="minor6">Minor 6th</option>
+                        <option value="major7">Major 7th</option>
+                        <option value="minor7">Minor 7th</option>
+                        <option value="dominant7">Dominant 7th</option>
+                        <option value="diminished7">Diminished 7th</option>
+                        <option value="7sus4">7sus4</option>
+                        <option value="minor7b5">Minor 7th ♭5</option>
+                        <option value="7b5">7th ♭5</option>
+                        <option value="7b9">7th ♭9</option>
+                        <option value="7sharp9">7th ♯9</option>
+                        <option value="major9">Major 9th</option>
+                        <option value="minor9">Minor 9th</option>
+                        <option value="dominant9">Dominant 9th</option>
+                        <option value="add9">Add9</option>
+                        <option value="6add9">6/9</option>
+                        <option value="major11">Major 11th</option>
+                        <option value="minor11">Minor 11th</option>
+                        <option value="dominant11">Dominant 11th</option>
+                        <option value="major13">Major 13th</option>
+                        <option value="minor13">Minor 13th</option>
+                        <option value="dominant13">Dominant 13th</option>
+                    </select>
+                    <button id="sound-bank-button" class="sound-bank-button" title="Change Sound Bank">🎵</button>
+                </div>
             </div>
         </div>
 
@@ -558,6 +703,106 @@
         };
 
         const markerOffset = 6; // pixels to center markers on strings
+
+        // Available soundfonts from soundfont-player library
+        // Organized by category for better UX
+        const soundBanks = [
+            // Percussion/Mallet
+            { id: 'dulcimer', name: 'Dulcimer', category: 'Percussion' },
+            { id: 'kalimba', name: 'Kalimba', category: 'Percussion' },
+            { id: 'marimba', name: 'Marimba', category: 'Percussion' },
+            { id: 'xylophone', name: 'Xylophone', category: 'Percussion' },
+            { id: 'vibraphone', name: 'Vibraphone', category: 'Percussion' },
+            { id: 'glockenspiel', name: 'Glockenspiel', category: 'Percussion' },
+            { id: 'tubular_bells', name: 'Tubular Bells', category: 'Percussion' },
+            { id: 'music_box', name: 'Music Box', category: 'Percussion' },
+            { id: 'timpani', name: 'Timpani', category: 'Percussion' },
+            { id: 'steel_drums', name: 'Steel Drums', category: 'Percussion' },
+            
+            // Piano
+            { id: 'acoustic_grand_piano', name: 'Acoustic Grand Piano', category: 'Piano' },
+            { id: 'bright_acoustic_piano', name: 'Bright Acoustic Piano', category: 'Piano' },
+            { id: 'electric_grand_piano', name: 'Electric Grand Piano', category: 'Piano' },
+            { id: 'honkytonk_piano', name: 'Honky-tonk Piano', category: 'Piano' },
+            { id: 'electric_piano_1', name: 'Electric Piano 1', category: 'Piano' },
+            { id: 'electric_piano_2', name: 'Electric Piano 2', category: 'Piano' },
+            { id: 'harpsichord', name: 'Harpsichord', category: 'Piano' },
+            { id: 'clavinet', name: 'Clavinet', category: 'Piano' },
+            
+            // Strings
+            { id: 'violin', name: 'Violin', category: 'Strings' },
+            { id: 'viola', name: 'Viola', category: 'Strings' },
+            { id: 'cello', name: 'Cello', category: 'Strings' },
+            { id: 'contrabass', name: 'Contrabass', category: 'Strings' },
+            { id: 'acoustic_guitar_nylon', name: 'Acoustic Guitar (Nylon)', category: 'Strings' },
+            { id: 'acoustic_guitar_steel', name: 'Acoustic Guitar (Steel)', category: 'Strings' },
+            { id: 'electric_guitar_jazz', name: 'Electric Guitar (Jazz)', category: 'Strings' },
+            { id: 'electric_guitar_clean', name: 'Electric Guitar (Clean)', category: 'Strings' },
+            { id: 'pizzicato_strings', name: 'Pizzicato Strings', category: 'Strings' },
+            { id: 'orchestral_harp', name: 'Orchestral Harp', category: 'Strings' },
+            { id: 'string_ensemble_1', name: 'String Ensemble 1', category: 'Strings' },
+            { id: 'string_ensemble_2', name: 'String Ensemble 2', category: 'Strings' },
+            { id: 'banjo', name: 'Banjo', category: 'Strings' },
+            { id: 'shamisen', name: 'Shamisen', category: 'Strings' },
+            { id: 'koto', name: 'Koto', category: 'Strings' },
+            { id: 'sitar', name: 'Sitar', category: 'Strings' },
+            
+            // Woodwinds
+            { id: 'flute', name: 'Flute', category: 'Woodwinds' },
+            { id: 'piccolo', name: 'Piccolo', category: 'Woodwinds' },
+            { id: 'recorder', name: 'Recorder', category: 'Woodwinds' },
+            { id: 'pan_flute', name: 'Pan Flute', category: 'Woodwinds' },
+            { id: 'blown_bottle', name: 'Blown Bottle', category: 'Woodwinds' },
+            { id: 'shakuhachi', name: 'Shakuhachi', category: 'Woodwinds' },
+            { id: 'whistle', name: 'Whistle', category: 'Woodwinds' },
+            { id: 'ocarina', name: 'Ocarina', category: 'Woodwinds' },
+            { id: 'oboe', name: 'Oboe', category: 'Woodwinds' },
+            { id: 'english_horn', name: 'English Horn', category: 'Woodwinds' },
+            { id: 'bassoon', name: 'Bassoon', category: 'Woodwinds' },
+            { id: 'clarinet', name: 'Clarinet', category: 'Woodwinds' },
+            { id: 'soprano_sax', name: 'Soprano Sax', category: 'Woodwinds' },
+            { id: 'alto_sax', name: 'Alto Sax', category: 'Woodwinds' },
+            { id: 'tenor_sax', name: 'Tenor Sax', category: 'Woodwinds' },
+            { id: 'baritone_sax', name: 'Baritone Sax', category: 'Woodwinds' },
+            
+            // Brass
+            { id: 'trumpet', name: 'Trumpet', category: 'Brass' },
+            { id: 'trombone', name: 'Trombone', category: 'Brass' },
+            { id: 'tuba', name: 'Tuba', category: 'Brass' },
+            { id: 'french_horn', name: 'French Horn', category: 'Brass' },
+            { id: 'brass_section', name: 'Brass Section', category: 'Brass' },
+            
+            // Organ
+            { id: 'drawbar_organ', name: 'Drawbar Organ', category: 'Organ' },
+            { id: 'percussive_organ', name: 'Percussive Organ', category: 'Organ' },
+            { id: 'rock_organ', name: 'Rock Organ', category: 'Organ' },
+            { id: 'church_organ', name: 'Church Organ', category: 'Organ' },
+            { id: 'reed_organ', name: 'Reed Organ', category: 'Organ' },
+            { id: 'accordion', name: 'Accordion', category: 'Organ' },
+            { id: 'harmonica', name: 'Harmonica', category: 'Organ' },
+            { id: 'tango_accordion', name: 'Tango Accordion', category: 'Organ' },
+            
+            // Synth
+            { id: 'celesta', name: 'Celesta', category: 'Synth' },
+            { id: 'lead_1_square', name: 'Square Lead', category: 'Synth' },
+            { id: 'lead_2_sawtooth', name: 'Sawtooth Lead', category: 'Synth' },
+            { id: 'pad_1_new_age', name: 'New Age Pad', category: 'Synth' },
+            { id: 'pad_2_warm', name: 'Warm Pad', category: 'Synth' },
+            { id: 'fx_1_rain', name: 'Rain FX', category: 'Synth' },
+            { id: 'fx_2_soundtrack', name: 'Soundtrack FX', category: 'Synth' },
+            { id: 'fx_3_crystal', name: 'Crystal FX', category: 'Synth' },
+            { id: 'fx_4_atmosphere', name: 'Atmosphere FX', category: 'Synth' },
+            
+            // Bass
+            { id: 'acoustic_bass', name: 'Acoustic Bass', category: 'Bass' },
+            { id: 'electric_bass_finger', name: 'Electric Bass (Finger)', category: 'Bass' },
+            { id: 'electric_bass_pick', name: 'Electric Bass (Pick)', category: 'Bass' },
+            { id: 'fretless_bass', name: 'Fretless Bass', category: 'Bass' },
+            { id: 'slap_bass_1', name: 'Slap Bass 1', category: 'Bass' },
+            { id: 'slap_bass_2', name: 'Slap Bass 2', category: 'Bass' },
+            { id: 'synth_bass_1', name: 'Synth Bass 1', category: 'Bass' },
+            { id: 'synth_bass_2', name: 'Synth Bass 2', category: 'Bass' }
+        ];
 
         // Instrument configurations
         // "defualt: true" indicates instruments to show by default in the dropdown
@@ -819,7 +1064,7 @@
                         name: 'Bass',
                         notesLeft: ['D#5', 'C#5', 'A#4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3', 'C#3', 'B2', 'A2'],
                         verticalOffset: 0,
-                        markers: [2,5,8,11,14] // Bb4, F4, C4, G3, D3
+                        markers: [2,5,8,11,14,17] // Bb4, F4, C4, G3, D3
                     },
                     {
                         name: 'Low Bass',
@@ -947,22 +1192,22 @@
             },
             {
                 id: 'rick-thum-pro-17-17',
-                name: 'Rick Thum Pro 17/17 - DRAFT',
+                name: 'Rick Thum Pro 17/17',
                 default: true,
                 bridges: [
                     
                     {
                         name: 'Treble',
-                        notesLeft: ['G6', 'E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4'],
-                        notesRight: ['C#6', 'Bb6', 'G5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3'],
+                        notesLeft: ['E6', 'D6', 'C6', 'B5', 'A5', 'G5', 'F#5', 'E5', 'D5', 'C#5', 'B4', 'A4', 'G#4', 'F#4', 'E4', 'D#4', 'F3'],
+                        notesRight: ['Bb6', 'G5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F#4', 'E4', 'D4', 'C#4', 'B3', 'A3', 'G#3', 'Bb2'],
                         verticalOffset: 0,
-                        markers: [3, 6, 9, 12, 15] // F5, C5, G4, D4, A3
+                        markers: [2,5,8,11,14] // C6, G5, D5, A4, E4
                     },
                     {
                         name: 'Bass',
-                        notesLeft: ['G#5', 'D#5', 'C5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3', 'C#3'],
+                        notesLeft: ['D#5', 'C#5', 'Bb4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4', 'B3', 'A3', 'G3', 'F#3', 'E3', 'D3', 'A2', 'D2'],
                         verticalOffset: 0,
-                        markers: [3, 6, 9, 12, 15] // Bb4, F4, C4, G3, D3
+                        markers: [2,5,8,11,14] // Bb4, F4, C4, G3, D3
                     }
                 ]
             },
@@ -1131,8 +1376,9 @@
         let isLoadingInstrument = false;
         let soundfontLoadFailed = false;
         let activeOscillators = [];
+        let currentSoundBank = 'dulcimer'; // Default sound bank
 
-        async function initAudio() {
+        async function initAudio(forceReload = false) {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
@@ -1147,20 +1393,41 @@
                 }
             }
             
-            if (!soundfontPlayer && !isLoadingInstrument && !soundfontLoadFailed) {
+            // Get saved sound bank preference
+            const savedSoundBank = getSavedValue('selectedSoundBank') || 'dulcimer';
+            
+            // Load soundfont if needed
+            if ((!soundfontPlayer || forceReload || savedSoundBank !== currentSoundBank) && !isLoadingInstrument && !soundfontLoadFailed) {
                 isLoadingInstrument = true;
+                currentSoundBank = savedSoundBank;
                 try {
-                    // Load the dulcimer soundfont
-                    console.log('Loading dulcimer soundfont...');
-                    soundfontPlayer = await Soundfont.instrument(audioContext, 'dulcimer');
-                    console.log('Dulcimer soundfont loaded successfully');
+                    // Load the selected soundfont
+                    console.log(`Loading ${currentSoundBank} soundfont...`);
+                    soundfontPlayer = await Soundfont.instrument(audioContext, currentSoundBank);
+                    console.log(`${currentSoundBank} soundfont loaded successfully`);
                 } catch (error) {
-                    console.error('Failed to load soundfont, will use fallback oscillator:', error);
+                    console.error(`Failed to load ${currentSoundBank} soundfont, will use fallback oscillator:`, error);
                     soundfontLoadFailed = true;
                 } finally {
                     isLoadingInstrument = false;
                 }
             }
+        }
+
+        async function changeSoundBank(soundBankId) {
+            // Save the selection
+            setSavedValue('selectedSoundBank', soundBankId);
+            currentSoundBank = soundBankId;
+            
+            // Reset soundfont state
+            soundfontPlayer = null;
+            soundfontLoadFailed = false;
+            
+            // Reload with new sound bank
+            await initAudio(true);
+            
+            // Update UI
+            populateSoundBankList();
         }
 
         function getFrequency(noteName) {
@@ -1696,6 +1963,92 @@
         buildDulcimer();
         highlightChord();
 
+        // Sound Bank Modal Management
+        function populateSoundBankList() {
+            const soundBankList = document.getElementById('sound-bank-list');
+            const selectedSoundBank = getSavedValue('selectedSoundBank') || 'dulcimer';
+            
+            soundBankList.innerHTML = '';
+            
+            // Group sound banks by category
+            const categories = [...new Set(soundBanks.map(sb => sb.category))];
+            
+            categories.forEach(category => {
+                // Create category header
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'sound-bank-category-header';
+                categoryHeader.textContent = category;
+                soundBankList.appendChild(categoryHeader);
+                
+                // Add instruments for this category
+                const categoryBanks = soundBanks.filter(sb => sb.category === category);
+                
+                categoryBanks.forEach(soundBank => {
+                    const item = document.createElement('div');
+                    item.className = 'sound-bank-item';
+                    if (soundBank.id === selectedSoundBank) {
+                        item.classList.add('active');
+                    }
+                    
+                    item.innerHTML = `
+                        <div class="sound-bank-name">${soundBank.name}</div>
+                    `;
+                    
+                    item.addEventListener('click', async () => {
+                        // Close modal
+                        document.getElementById('sound-bank-modal').classList.remove('active');
+                        
+                        // Change sound bank
+                        await changeSoundBank(soundBank.id);
+                    });
+                    
+                    soundBankList.appendChild(item);
+                });
+            });
+        }
+
+        // Sound bank modal event listeners - wrapped to ensure DOM is ready
+        function initSoundBankModal() {
+            const soundBankButton = document.getElementById('sound-bank-button');
+            const soundBankModal = document.getElementById('sound-bank-modal');
+            const modalCloseButton = document.getElementById('modal-close-button');
+            
+            if (soundBankButton && soundBankModal && modalCloseButton) {
+                // Sound bank button event listener
+                soundBankButton.addEventListener('click', () => {
+                    populateSoundBankList();
+                    soundBankModal.classList.add('active');
+                });
+
+                // Modal close button event listener
+                modalCloseButton.addEventListener('click', () => {
+                    soundBankModal.classList.remove('active');
+                });
+
+                // Close modal when clicking outside
+                soundBankModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'sound-bank-modal') {
+                        soundBankModal.classList.remove('active');
+                    }
+                });
+
+                // Close modal with Escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        soundBankModal.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // Initialize sound bank modal when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSoundBankModal);
+        } else {
+            // DOM already loaded
+            initSoundBankModal();
+        }
+
         // Allow spacebar to play chord
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && e.target.tagName !== 'SELECT') {
@@ -1704,5 +2057,18 @@
             }
         });
     </script>
+
+    <!-- Sound Bank Modal -->
+    <div id="sound-bank-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Sound Bank</h2>
+                <button class="modal-close" id="modal-close-button">&times;</button>
+            </div>
+            <div class="sound-bank-list" id="sound-bank-list">
+                <!-- Sound banks will be populated here by JavaScript -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>
