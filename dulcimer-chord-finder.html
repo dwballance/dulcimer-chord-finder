@@ -569,6 +569,53 @@
             font-weight: 600;
             font-size: 1rem;
         }
+
+        /* iOS Audio Initialization Overlay */
+        .audio-init-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .audio-init-overlay.show {
+            display: flex;
+        }
+
+        .audio-init-button {
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+            transition: all 0.3s;
+        }
+
+        .audio-init-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8);
+        }
+
+        .audio-init-text {
+            color: white;
+            font-size: 1.1rem;
+            text-align: center;
+            max-width: 400px;
+            padding: 0 20px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/soundfont-player@latest/dist/soundfont-player.min.js"></script>
     <script>
@@ -585,6 +632,15 @@
     </script>
 </head>
 <body>
+    <!-- Audio Initialization Overlay for iOS -->
+    <div class="audio-init-overlay" id="audio-init-overlay">
+        <div class="audio-init-text">
+            Tap below to enable sound<br>
+            <small>(Required for iOS devices)</small>
+        </div>
+        <button class="audio-init-button" id="audio-init-button">🔊 Enable Sound</button>
+    </div>
+
     <div class="container">
         <h1>Hammered Dulcimer Chord Finder</h1>
         
@@ -1431,6 +1487,7 @@
         let soundfontLoadFailed = false;
         let activeOscillators = [];
         let currentSoundBank = 'dulcimer'; // Default sound bank
+        let audioUnlocked = false; // Track if audio is truly unlocked
 
         async function initAudio(forceReload = false) {
             if (!audioContext) {
@@ -1484,6 +1541,61 @@
             populateSoundBankList();
         }
 
+        function showAudioInitOverlay() {
+            const overlay = document.getElementById('audio-init-overlay');
+            if (overlay) {
+                overlay.classList.add('show');
+            }
+        }
+
+        function hideAudioInitOverlay() {
+            const overlay = document.getElementById('audio-init-overlay');
+            if (overlay) {
+                overlay.classList.remove('show');
+            }
+        }
+
+        async function unlockAudio() {
+            console.log('[DEBUG] unlockAudio called - creating AudioContext in user gesture...');
+            
+            // FORCE create a new AudioContext in this user gesture
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            console.log('[DEBUG] New AudioContext created, initial state:', audioContext.state);
+            
+            // MUST resume on iOS - this is critical
+            console.log('[DEBUG] Calling resume()...');
+            await audioContext.resume();
+            console.log('[DEBUG] After resume(), state:', audioContext.state);
+            
+            // Verify it's actually running
+            if (audioContext.state !== 'running') {
+                console.error('[DEBUG] AudioContext failed to reach running state:', audioContext.state);
+                return;
+            }
+            
+            // Play a brief unlock tone (silent on success)
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            gainNode.gain.value = 0.001; // Nearly silent
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = 440;
+            oscillator.type = 'sine';
+            
+            const now = audioContext.currentTime;
+            oscillator.start(now);
+            oscillator.stop(now + 0.1);
+            
+            // Mark as unlocked
+            audioUnlocked = true;
+            console.log('[DEBUG] Audio unlocked successfully');
+            
+            // Now load soundfont
+            await initAudio(true);
+            
+            hideAudioInitOverlay();
+        }
+
         function getFrequency(noteName) {
             const match = noteName.match(/([A-G][#b]?)(\d)/);
             if (!match) {
@@ -1520,6 +1632,8 @@
                 return;
             }
             
+            console.log(`[DEBUG] Playing oscillator at ${frequency}Hz, context state: ${audioContext.state}`);
+            
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             
@@ -1532,8 +1646,10 @@
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
             
+            console.log(`[DEBUG] Oscillator starting at ${audioContext.currentTime}, stopping at ${audioContext.currentTime + duration}`);
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + duration);
+            console.log('[DEBUG] Oscillator start/stop commands issued');
             
             activeOscillators.push(oscillator);
             
@@ -1544,13 +1660,46 @@
         }
 
         async function playNote(noteName, duration = 1.0) {
+            console.log(`[DEBUG] playNote called for ${noteName}`);
+            
+            // Try to auto-initialize on first play if not yet unlocked
+            if (!audioUnlocked && !audioContext) {
+                console.log('[DEBUG] First play attempt, trying to auto-unlock...');
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    await audioContext.resume();
+                    
+                    if (audioContext.state === 'running') {
+                        // Success! Desktop browser
+                        console.log('[DEBUG] Audio auto-unlocked on first play');
+                        audioUnlocked = true;
+                        // Start loading soundfont
+                        initAudio();
+                    } else {
+                        // Failed - need user gesture (iOS/mobile)
+                        console.log('[DEBUG] Auto-unlock failed, showing overlay');
+                        showAudioInitOverlay();
+                        return;
+                    }
+                } catch (error) {
+                    console.log('[DEBUG] Auto-unlock error, showing overlay:', error);
+                    showAudioInitOverlay();
+                    return;
+                }
+            } else if (!audioUnlocked) {
+                // Audio exists but not unlocked - show overlay
+                console.log('[DEBUG] Audio not unlocked, showing overlay');
+                showAudioInitOverlay();
+                return;
+            }
+            
             // Initialize audio if not already done
             if (!audioContext) {
+                console.log('[DEBUG] Creating AudioContext...');
                 await initAudio();
-            } else if (audioContext.state === 'suspended') {
-                // Resume context if it was suspended (iOS requirement)
-                await audioContext.resume();
             }
+            
+            console.log('[DEBUG] AudioContext state:', audioContext ? audioContext.state : 'null');
             
             // If soundfont is still loading, wait for it to finish
             if (isLoadingInstrument) {
@@ -1581,10 +1730,12 @@
                         }
                     }
                     
+                    console.log(`[DEBUG] Attempting to play ${processedNote} via soundfont, context state: ${audioContext.state}`);
                     soundfontPlayer.play(processedNote, audioContext.currentTime, {
                         duration: duration,
                         gain: config.note_gain  // Volume (0.0 to 1.0)
                     });
+                    console.log(`[DEBUG] Soundfont play command sent for ${processedNote}`);
                 } catch (error) {
                     console.error(`Error playing note ${noteName} with soundfont, falling back to oscillator:`, error);
                     playNoteWithOscillator(noteName, duration);
@@ -2038,6 +2189,28 @@
         buildDulcimer();
         highlightChord();
 
+        // Try to auto-unlock audio on page load (works on desktop, requires user gesture on iOS)
+        (async function tryAutoUnlock() {
+            try {
+                const testContext = new (window.AudioContext || window.webkitAudioContext)();
+                await testContext.resume();
+                
+                // If we get here with running state, audio works without user interaction (desktop)
+                if (testContext.state === 'running') {
+                    console.log('[DEBUG] Audio auto-unlocked - desktop browser detected');
+                    audioContext = testContext;
+                    audioUnlocked = true;
+                    // Load soundfont in background
+                    initAudio();
+                } else {
+                    console.log('[DEBUG] Audio requires user interaction - mobile browser');
+                    testContext.close();
+                }
+            } catch (error) {
+                console.log('[DEBUG] Auto-unlock failed, will require user interaction:', error);
+            }
+        })();
+
         // Sound Bank Modal Management
         function populateSoundBankList() {
             const soundBankList = document.getElementById('sound-bank-list');
@@ -2122,6 +2295,12 @@
         } else {
             // DOM already loaded
             initSoundBankModal();
+        }
+
+        // Audio initialization button for iOS
+        const audioInitButton = document.getElementById('audio-init-button');
+        if (audioInitButton) {
+            audioInitButton.addEventListener('click', unlockAudio);
         }
 
         // Allow spacebar to play chord (fast)
