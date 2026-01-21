@@ -12,6 +12,38 @@
             --string-height: 26px;       /* Desktop string height */
             --string-gap: 8px;           /* Gap between strings */
             --string-spacing: 34px;      /* Total string spacing (height + gap) */
+            
+            /* Chord colors */
+            --chord1-color: #4CAF50;     /* Green */
+            --chord1-light: #66BB6A;     /* Light green */
+            --chord1-dark: #2E7D32;      /* Dark green */
+            --chord2-color: #2196F3;     /* Blue */
+            --chord2-light: #64B5F6;     /* Light blue */
+            --chord2-dark: #1565C0;      /* Dark blue */
+            --chord3-color: #FF9800;     /* Orange */
+            --chord3-light: #FFB74D;     /* Light orange */
+            --chord3-dark: #E65100;      /* Dark orange */
+            
+            /* UI colors */
+            --background-gradient-start: #667eea;
+            --background-gradient-end: #764ba2;
+            --container-bg: white;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-tertiary: #888;
+            --text-dark: #222;
+            --border-color: #ddd;
+            --border-light: #999;
+            --button-primary: #667eea;
+            --button-primary-hover: #5568d3;
+            --section-bg: #f8f9fa;
+            --section-bg-alt: #f0f0f0;
+            --dulcimer-bg-start: #8B4513;
+            --dulcimer-bg-end: #A0522D;
+            --bridge-color: #654321;
+            --string-default: #C0C0C0;
+            --string-highlight: #E8E8E8;
+            --footer-text: white;
         }
 
         * {
@@ -22,7 +54,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--background-gradient-start) 0%, var(--background-gradient-end) 100%);
             min-height: 100vh;
             padding: 20px;
             display: flex;
@@ -33,7 +65,7 @@
         .container {
             max-width: 1200px;
             width: 100%;
-            background: white;
+            background: var(--container-bg);
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             padding: 30px;
@@ -42,7 +74,7 @@
 
         h1 {
             text-align: center;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 30px;
             font-size: 2rem;
         }
@@ -56,6 +88,107 @@
             align-items: center;
         }
 
+        .instrument-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+
+        .chord-selector {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            margin-bottom: 4px;
+            background: var(--section-bg);
+            border-radius: 10px;
+            border-left: 4px solid var(--border-color);
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .chord-selector.chord-1 {
+            border-left-color: var(--chord1-color);
+        }
+
+        .chord-selector.chord-2 {
+            border-left-color: var(--chord2-color);
+        }
+
+        .chord-selector.chord-3 {
+            border-left-color: var(--chord3-color);
+        }
+
+        .chord-selector.hidden {
+            display: none;
+        }
+
+        .chord-selector-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+            align-items: flex-end;
+        }
+
+        .chord-selector-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .chord-selector-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .add-chord-btn, .remove-chord-btn {
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            min-width: 40px;
+            height: 40px;
+        }
+
+        .add-chord-btn-container {
+            text-align: center;
+            margin-bottom: 8px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .add-chord-btn-container .add-chord-btn {
+            padding: 10px 20px;
+            margin-top: 4px;
+            font-size: 1.3rem;
+            min-width: 50px;
+            height: 50px;
+        }
+
+        .add-chord-btn-container.hidden {
+            display: none;
+        }
+
+        .remove-chord-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .chord-selector-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .chord-selector-notes {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
         .control-group {
             display: flex;
             flex-direction: column;
@@ -64,38 +197,38 @@
 
         label {
             font-size: 0.9rem;
-            color: #666;
+            color: var(--text-secondary);
             font-weight: 600;
         }
 
         select, button {
-            padding: 12px 20px;
+            padding: 8px 12px;
             font-size: var(--base-font-size);
-            border: 2px solid #ddd;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
-            background: white;
+            background: var(--container-bg);
             cursor: pointer;
             transition: all 0.3s;
         }
 
         select:focus, button:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--button-primary);
         }
 
         select:hover, button:hover {
-            border-color: #667eea;
+            border-color: var(--button-primary);
         }
 
         button {
-            background: #667eea;
-            color: white;
+            background: var(--button-primary);
+            color: var(--container-bg);
             border: none;
             font-weight: 600;
         }
 
         button:hover {
-            background: #5568d3;
+            background: var(--button-primary-hover);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
@@ -104,47 +237,13 @@
             transform: translateY(0);
         }
 
-        .chord-info {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-
-        .chord-name {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .chord-notes-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .chord-notes {
-            font-size: 1.1rem;
-            color: #666;
-        }
-
-        #play-chord-fast,
-        #play-chord-slow {
-            padding: 8px 16px;
-            font-size: 0.875rem;
-        }
-
         .dulcimer-container {
             position: relative;
             width: 100%;
             max-width: 1000px;
             margin: 0 auto;
             padding: 40px 20px;
-            background: linear-gradient(to bottom, #8B4513 0%, #A0522D 100%);
+            background: linear-gradient(to bottom, var(--dulcimer-bg-start) 0%, var(--dulcimer-bg-end) 100%);
             border-radius: 15px;
             box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
             display: flex;
@@ -163,7 +262,7 @@
         .bridge-label {
             text-align: center;
             font-weight: bold;
-            color: #fff;
+            color: var(--footer-text);
             margin-bottom: 15px;
             font-size: 1rem;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
@@ -172,7 +271,7 @@
 
         .bridge {
             position: relative;
-            background: #654321;
+            background: var(--bridge-color);
             width: 8px;
             height: 100%;
             border-radius: 4px;
@@ -183,9 +282,9 @@
         .bridge-marker {
             width: 12px;
             height: 12px;
-            background: white;
+            background: var(--container-bg);
             border-radius: 50%;
-            border: 1px solid #333;
+            border: 1px solid var(--text-primary);
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
@@ -227,10 +326,10 @@
         }
 
         .string {
-            width: 50px;
+            width: 65px;
             height: 26px;
-            background: linear-gradient(to right, #C0C0C0 0%, #E8E8E8 50%, #C0C0C0 100%);
-            border: 1px solid #999;
+            background: linear-gradient(to right, var(--string-default) 0%, var(--string-highlight) 50%, var(--string-default) 100%);
+            border: 1px solid var(--border-light);
             border-radius: 3px;
             cursor: pointer;
             position: relative;
@@ -240,7 +339,7 @@
             justify-content: center;
             font-size: var(--string-font-size);
             font-weight: bold;
-            color: #222;
+            color: var(--text-dark);
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             flex-shrink: 0;
         }
@@ -254,12 +353,151 @@
             transform: scale(0.98);
         }
 
-        .string.active {
-            background: linear-gradient(to bottom, #4CAF50 0%, #66BB6A 50%, #4CAF50 100%);
-            border-color: #2E7D32;
-            color: white;
+        /* Single chord highlighting - full color */
+        .string.chord-1 {
+            background: linear-gradient(to bottom, var(--chord1-color) 0%, var(--chord1-light) 50%, var(--chord1-color) 100%) !important;
+            border-color: var(--chord1-dark);
+            color: var(--container-bg);
             font-weight: bold;
-            animation: pulse 0.3s;
+        }
+
+        .string.chord-2 {
+            background: linear-gradient(to bottom, var(--chord2-color) 0%, var(--chord2-light) 50%, var(--chord2-color) 100%) !important;
+            border-color: var(--chord2-dark);
+            color: var(--container-bg);
+            font-weight: bold;
+        }
+
+        .string.chord-3 {
+            background: linear-gradient(to bottom, var(--chord3-color) 0%, var(--chord3-light) 50%, var(--chord3-color) 100%) !important;
+            border-color: var(--chord3-dark);
+            color: var(--container-bg);
+            font-weight: bold;
+        }
+
+        /* Two chords active - single chord matches */
+        .string.chord-1-only-of-2 {
+            background: linear-gradient(to right, 
+                var(--chord1-color) 0% 25%, 
+                var(--string-default) 25% 100%) !important;
+            border-color: var(--chord1-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .string.chord-2-only-of-2 {
+            background: linear-gradient(to right, 
+                var(--string-default) 0% 75%, 
+                var(--chord2-color) 75% 100%) !important;
+            border-color: var(--chord2-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        /* Two chords active - both match */
+        .string.chord-1-2-of-2 {
+            background: linear-gradient(to right, 
+                var(--chord1-color) 0% 25%, 
+                var(--string-default) 25% 75%, 
+                var(--chord2-color) 75% 100%) !important;
+            border-color: var(--chord1-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .string.chord-1-3-of-2 {
+            background: linear-gradient(to right, 
+                var(--chord1-color) 0% 25%, 
+                var(--string-default) 25% 75%, 
+                var(--chord3-color) 75% 100%) !important;
+            border-color: var(--chord1-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .string.chord-2-3-of-2 {
+            background: linear-gradient(to right, 
+                var(--chord2-color) 0% 25%, 
+                var(--string-default) 25% 75%, 
+                var(--chord3-color) 75% 100%) !important;
+            border-color: var(--chord2-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        /* Three chords active - single chord matches */
+        .string.chord-1-only-of-3 {
+            background: linear-gradient(to right, 
+                var(--chord1-color) 0% 25%, 
+                var(--string-default) 25% 100%) !important;
+            border-color: var(--chord1-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .string.chord-2-only-of-3 {
+            background: linear-gradient(to right, 
+                var(--string-default) 0% 75%, 
+                var(--chord2-color) 75% 100%) !important;
+            border-color: var(--chord2-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .string.chord-3-only-of-3 {
+            background: linear-gradient(to right, 
+                var(--string-default) 0% 37.5%,
+                var(--chord3-color) 37.5% 62.5%,
+                var(--string-default) 62.5% 100%) !important;
+            border-color: var(--chord3-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        /* Three chords active - two chord matches */
+        .string.chord-1-2-of-3 {
+            background: linear-gradient(to right, 
+                var(--chord1-color) 0% 25%, 
+                var(--string-default) 25% 75%, 
+                var(--chord2-color) 75% 100%) !important;
+            border-color: var(--chord1-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .string.chord-1-3-of-3 {
+            background: linear-gradient(to right, 
+                var(--chord1-color) 0% 25%, 
+                var(--string-default) 25% 37.5%,
+                var(--chord3-color) 37.5% 62.5%,
+                var(--string-default) 62.5% 100%) !important;
+            border-color: var(--chord1-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        .string.chord-2-3-of-3 {
+            background: linear-gradient(to right, 
+                var(--string-default) 0% 37.5%,
+                var(--chord3-color) 37.5% 62.5%,
+                var(--string-default) 62.5% 75%,
+                var(--chord2-color) 75% 100%) !important;
+            border-color: var(--chord2-dark);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        /* Three chords active - all three match */
+        .string.chord-1-2-3-of-3 {
+            background: linear-gradient(to right, 
+                var(--chord1-color) 0% 25%, 
+                var(--string-default) 25% 37.5%,
+                var(--chord3-color) 37.5% 62.5%,
+                var(--string-default) 62.5% 75%,
+                var(--chord2-color) 75% 100%) !important;
+            border-color: var(--chord1-dark);
+            color: var(--text-dark);
+            font-weight: bold;
         }
 
         @keyframes pulse {
@@ -270,15 +508,9 @@
         .note-label {
             position: absolute;
             font-size: 0.75rem;
-            color: #888;
+            color: var(--text-tertiary);
             bottom: 2px;
             opacity: 0.7;
-        }
-
-        .string.active .note-label {
-            color: white;
-            opacity: 1;
-            font-weight: bold;
         }
 
         @media (max-width: 768px) {
@@ -310,6 +542,27 @@
                 width: 100%;
             }
 
+            /* Keep Root Note and Chord Type side by side on mobile */
+            .chord-selector-controls {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .chord-selector-controls .control-group:nth-child(1) {
+                flex: 0 0 calc(33.33% - 7px);
+                min-width: 0;
+            }
+
+            .chord-selector-controls .control-group:nth-child(2) {
+                flex: 0 0 calc(66.67% - 3px);
+                min-width: 0;
+            }
+
+            .chord-selector-info {
+                flex: 1 1 100%;
+            }
+
             .dulcimer-container {
                 padding: 20px 10px;
                 gap: 15px;
@@ -317,21 +570,13 @@
             }
 
             .string {
-                width: 40px;
+                width: 52px;
                 height: 22px;
                 font-size: 0.75rem;
             }
 
             .bridge-label {
                 font-size: 0.85rem;
-            }
-
-            .chord-name {
-                font-size: 1.4rem;
-            }
-
-            .chord-notes {
-                font-size: 0.95rem;
             }
         }
 
@@ -346,7 +591,7 @@
             }
 
             .string {
-                width: 32px;
+                width: 42px;
                 height: 20px;
                 font-size: 0.65rem;
             }
@@ -363,18 +608,49 @@
             .bridge-label {
                 font-size: 0.75rem;
             }
+
+            /* Make play buttons more compact on mobile */
+            .play-chord-btn {
+                padding: 6px 8px;
+                font-size: 0.85rem;
+                white-space: nowrap;
+                min-width: auto;
+                flex-shrink: 1;
+            }
+
+            .remove-chord-btn {
+                padding: 6px 8px;
+                font-size: 0.85rem;
+                min-width: auto;
+                width: 32px;
+                height: auto;
+                flex-shrink: 0;
+            }
+
+            .chord-selector-buttons {
+                gap: 4px;
+            }
+
+            .chord-selector-buttons .remove-chord-btn {
+                margin-left: 80%;
+            }
+
+            .add-chord-btn-container .add-chord-btn {
+                width: 100%;
+                max-width: none;
+            }
         }
 
         .footer {
             text-align: center;
-            color: white;
+            color: var(--footer-text);
             margin-top: 20px;
             font-size: 0.9rem;
         }
 
         /* Footer links styling */
         .footer-link {
-            color: white;
+            color: var(--footer-text);
             text-decoration: underline;
             margin: 0 10px;
         }
@@ -382,13 +658,13 @@
         /* Request layout option styling */
         .request-layout-option {
             font-style: italic;
-            color: #667eea;
+            color: var(--button-primary);
         }
 
         /* No instrument message styling */
         .no-instrument-message {
             text-align: center;
-            color: white;
+            color: var(--footer-text);
             font-size: 1.2rem;
             padding: 50px;
         }
@@ -396,7 +672,7 @@
         /* Validation warning banner styling */
         .validation-warning-banner {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
+            color: var(--container-bg);
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 10px;
@@ -430,9 +706,9 @@
 
         /* Sound bank button styling */
         .sound-bank-button {
-            background: white;
-            border: 2px solid #ddd;
-            color: #667eea;
+            background: var(--container-bg);
+            border: 2px solid var(--border-color);
+            color: var(--button-primary);
             padding: 8px 12px;
             font-size: 1.2rem;
             min-width: 44px;
@@ -442,8 +718,8 @@
         }
 
         .sound-bank-button:hover {
-            background: #f8f9fa;
-            border-color: #667eea;
+            background: var(--section-bg);
+            border-color: var(--button-primary);
         }
 
         .control-group-with-button {
@@ -471,7 +747,7 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--container-bg);
             border-radius: 15px;
             padding: 25px;
             max-width: 500px;
@@ -488,12 +764,12 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid var(--section-bg-alt);
         }
 
         .modal-header h2 {
             margin: 0;
-            color: #333;
+            color: var(--text-primary);
             font-size: 1.5rem;
         }
 
@@ -501,7 +777,7 @@
             background: none;
             border: none;
             font-size: 1.8rem;
-            color: #999;
+            color: var(--border-light);
             cursor: pointer;
             padding: 0;
             width: 32px;
@@ -514,8 +790,8 @@
         }
 
         .modal-close:hover {
-            background: #f0f0f0;
-            color: #333;
+            background: var(--section-bg-alt);
+            color: var(--text-primary);
             transform: none;
             box-shadow: none;
         }
@@ -528,11 +804,11 @@
         .sound-bank-category-header {
             font-weight: 700;
             font-size: 1.1rem;
-            color: #667eea;
+            color: var(--button-primary);
             margin-top: 20px;
             margin-bottom: 10px;
             padding-bottom: 8px;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 2px solid var(--button-primary);
         }
 
         .sound-bank-category-header:first-child {
@@ -541,28 +817,28 @@
 
         .sound-bank-item {
             padding: 12px 15px;
-            border: 2px solid #ddd;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             margin-bottom: 8px;
             cursor: pointer;
             transition: all 0.2s;
-            background: white;
+            background: var(--container-bg);
         }
 
         .sound-bank-item:hover {
-            border-color: #667eea;
-            background: #f8f9fa;
+            border-color: var(--button-primary);
+            background: var(--section-bg);
         }
 
         .sound-bank-item.active {
-            background: #667eea;
-            border-color: #667eea;
-            color: white;
+            background: var(--button-primary);
+            border-color: var(--button-primary);
+            color: var(--container-bg);
         }
 
         .sound-bank-item.active:hover {
-            background: #5568d3;
-            border-color: #5568d3;
+            background: var(--button-primary-hover);
+            border-color: var(--button-primary-hover);
         }
 
         .sound-bank-name {
@@ -593,8 +869,8 @@
         .audio-init-button {
             padding: 20px 40px;
             font-size: 1.2rem;
-            background: #667eea;
-            color: white;
+            background: var(--button-primary);
+            color: var(--container-bg);
             border: none;
             border-radius: 12px;
             cursor: pointer;
@@ -604,13 +880,13 @@
         }
 
         .audio-init-button:hover {
-            background: #5568d3;
+            background: var(--button-primary-hover);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8);
         }
 
         .audio-init-text {
-            color: white;
+            color: var(--footer-text);
             font-size: 1.1rem;
             text-align: center;
             max-width: 400px;
@@ -644,7 +920,8 @@
     <div class="container">
         <h1>Hammered Dulcimer Chord Finder</h1>
         
-        <div class="controls">
+        <!-- Instrument and Sound Controls -->
+        <div class="instrument-controls">
             <div class="control-group">
                 <label for="instrument-select">Instrument</label>
                 <select id="instrument-select">
@@ -653,69 +930,223 @@
             </div>
 
             <div class="control-group">
-                <label for="root-note">Root Note</label>
-                <select id="root-note">
-                    <option value="C">C</option>
-                    <option value="C#">C♯/D♭</option>
-                    <option value="D">D</option>
-                    <option value="D#">D♯/E♭</option>
-                    <option value="E">E</option>
-                    <option value="F">F</option>
-                    <option value="F#">F♯/G♭</option>
-                    <option value="G">G</option>
-                    <option value="G#">G♯/A♭</option>
-                    <option value="A">A</option>
-                    <option value="A#">A♯/B♭</option>
-                    <option value="B">B</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label for="chord-type">Chord Type</label>
+                <label for="sound-bank-select">Sound Bank</label>
                 <div class="control-group-with-button">
-                    <select id="chord-type">
-                        <option value="major">Major</option>
-                        <option value="minor">Minor</option>
-                        <option value="diminished">Diminished</option>
-                        <option value="augmented">Augmented</option>
-                        <option value="sus2">Sus2</option>
-                        <option value="sus4">Sus4</option>
-                        <option value="power5">5 (Power Chord)</option>
-                        <option value="major6">Major 6th</option>
-                        <option value="minor6">Minor 6th</option>
-                        <option value="major7">Major 7th</option>
-                        <option value="minor7">Minor 7th</option>
-                        <option value="dominant7">Dominant 7th</option>
-                        <option value="diminished7">Diminished 7th</option>
-                        <option value="7sus4">7sus4</option>
-                        <option value="minor7b5">Minor 7th ♭5</option>
-                        <option value="7b5">7th ♭5</option>
-                        <option value="7b9">7th ♭9</option>
-                        <option value="7sharp9">7th ♯9</option>
-                        <option value="major9">Major 9th</option>
-                        <option value="minor9">Minor 9th</option>
-                        <option value="dominant9">Dominant 9th</option>
-                        <option value="add9">Add9</option>
-                        <option value="6add9">6/9</option>
-                        <option value="major11">Major 11th</option>
-                        <option value="minor11">Minor 11th</option>
-                        <option value="dominant11">Dominant 11th</option>
-                        <option value="major13">Major 13th</option>
-                        <option value="minor13">Minor 13th</option>
-                        <option value="dominant13">Dominant 13th</option>
-                    </select>
                     <button id="sound-bank-button" class="sound-bank-button" title="Change Sound Bank">🎵</button>
                 </div>
             </div>
         </div>
 
-        <div class="chord-info">
-            <div class="chord-name" id="chord-name">C Major</div>
-            <div class="chord-notes-container">
-                <div class="chord-notes" id="chord-notes">Notes: C, E, G</div>
-                <button id="play-chord-fast">▶ Fast</button>
-                <button id="play-chord-slow">▶ Slow</button>
+        <!-- Chord Selectors -->
+        <div class="chord-selectors">
+            <!-- Chord 1 (Green) - Always visible -->
+            <div class="chord-selector chord-1" data-chord-index="0">
+                <div class="chord-selector-controls">
+                    <div class="control-group">
+                        <label for="root-note-1">Root Note</label>
+                        <select id="root-note-1" class="root-note-select">
+                            <option value="C">C</option>
+                            <option value="C#">C♯/D♭</option>
+                            <option value="D">D</option>
+                            <option value="D#">D♯/E♭</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="F#">F♯/G♭</option>
+                            <option value="G">G</option>
+                            <option value="G#">G♯/A♭</option>
+                            <option value="A">A</option>
+                            <option value="A#">A♯/B♭</option>
+                            <option value="B">B</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="chord-type-1">Chord Type</label>
+                        <select id="chord-type-1" class="chord-type-select">
+                            <option value="major">Major</option>
+                            <option value="minor">Minor</option>
+                            <option value="diminished">Diminished</option>
+                            <option value="augmented">Augmented</option>
+                            <option value="sus2">Sus2</option>
+                            <option value="sus4">Sus4</option>
+                            <option value="power5">5 (Power Chord)</option>
+                            <option value="major6">Major 6th</option>
+                            <option value="minor6">Minor 6th</option>
+                            <option value="major7">Major 7th</option>
+                            <option value="minor7">Minor 7th</option>
+                            <option value="dominant7">Dominant 7th</option>
+                            <option value="diminished7">Diminished 7th</option>
+                            <option value="7sus4">7sus4</option>
+                            <option value="minor7b5">Minor 7th ♭5</option>
+                            <option value="7b5">7th ♭5</option>
+                            <option value="7b9">7th ♭9</option>
+                            <option value="7sharp9">7th ♯9</option>
+                            <option value="major9">Major 9th</option>
+                            <option value="minor9">Minor 9th</option>
+                            <option value="dominant9">Dominant 9th</option>
+                            <option value="add9">Add9</option>
+                            <option value="6add9">6/9</option>
+                            <option value="major11">Major 11th</option>
+                            <option value="minor11">Minor 11th</option>
+                            <option value="dominant11">Dominant 11th</option>
+                            <option value="major13">Major 13th</option>
+                            <option value="minor13">Minor 13th</option>
+                            <option value="dominant13">Dominant 13th</option>
+                        </select>
+                    </div>
+
+                    <div class="chord-selector-info">
+                        <div class="chord-selector-notes" id="chord-notes-1">Notes: C, E, G</div>
+                    </div>
+                </div>
+
+                <div class="chord-selector-buttons">
+                    <button id="play-chord-1-fast" class="play-chord-btn">▶ Fast</button>
+                    <button id="play-chord-1-slow" class="play-chord-btn">▶ Slow</button>
+                    <button id="remove-chord-1-btn" class="remove-chord-btn">−</button>
+                </div>
             </div>
+
+            <!-- Chord 2 (Blue) - Hidden by default -->
+            <div class="chord-selector chord-2 hidden" data-chord-index="1">
+                <div class="chord-selector-controls">
+                    <div class="control-group">
+                        <label for="root-note-2">Root Note</label>
+                        <select id="root-note-2" class="root-note-select">
+                            <option value="C">C</option>
+                            <option value="C#">C♯/D♭</option>
+                            <option value="D">D</option>
+                            <option value="D#">D♯/E♭</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="F#">F♯/G♭</option>
+                            <option value="G">G</option>
+                            <option value="G#">G♯/A♭</option>
+                            <option value="A">A</option>
+                            <option value="A#">A♯/B♭</option>
+                            <option value="B">B</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="chord-type-2">Chord Type</label>
+                        <select id="chord-type-2" class="chord-type-select">
+                            <option value="major">Major</option>
+                            <option value="minor">Minor</option>
+                            <option value="diminished">Diminished</option>
+                            <option value="augmented">Augmented</option>
+                            <option value="sus2">Sus2</option>
+                            <option value="sus4">Sus4</option>
+                            <option value="power5">5 (Power Chord)</option>
+                            <option value="major6">Major 6th</option>
+                            <option value="minor6">Minor 6th</option>
+                            <option value="major7">Major 7th</option>
+                            <option value="minor7">Minor 7th</option>
+                            <option value="dominant7">Dominant 7th</option>
+                            <option value="diminished7">Diminished 7th</option>
+                            <option value="7sus4">7sus4</option>
+                            <option value="minor7b5">Minor 7th ♭5</option>
+                            <option value="7b5">7th ♭5</option>
+                            <option value="7b9">7th ♭9</option>
+                            <option value="7sharp9">7th ♯9</option>
+                            <option value="major9">Major 9th</option>
+                            <option value="minor9">Minor 9th</option>
+                            <option value="dominant9">Dominant 9th</option>
+                            <option value="add9">Add9</option>
+                            <option value="6add9">6/9</option>
+                            <option value="major11">Major 11th</option>
+                            <option value="minor11">Minor 11th</option>
+                            <option value="dominant11">Dominant 11th</option>
+                            <option value="major13">Major 13th</option>
+                            <option value="minor13">Minor 13th</option>
+                            <option value="dominant13">Dominant 13th</option>
+                        </select>
+                    </div>
+
+                    <div class="chord-selector-info">
+                        <div class="chord-selector-notes" id="chord-notes-2">Notes: C, E, G</div>
+                    </div>
+                </div>
+
+                <div class="chord-selector-buttons">
+                    <button id="play-chord-2-fast" class="play-chord-btn">▶ Fast</button>
+                    <button id="play-chord-2-slow" class="play-chord-btn">▶ Slow</button>
+                    <button id="remove-chord-2-btn" class="remove-chord-btn">−</button>
+                </div>
+            </div>
+
+            <!-- Chord 3 (Orange) - Hidden by default -->
+            <div class="chord-selector chord-3 hidden" data-chord-index="2">
+                <div class="chord-selector-controls">
+                    <div class="control-group">
+                        <label for="root-note-3">Root Note</label>
+                        <select id="root-note-3" class="root-note-select">
+                            <option value="C">C</option>
+                            <option value="C#">C♯/D♭</option>
+                            <option value="D">D</option>
+                            <option value="D#">D♯/E♭</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="F#">F♯/G♭</option>
+                            <option value="G">G</option>
+                            <option value="G#">G♯/A♭</option>
+                            <option value="A">A</option>
+                            <option value="A#">A♯/B♭</option>
+                            <option value="B">B</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="chord-type-3">Chord Type</label>
+                        <select id="chord-type-3" class="chord-type-select">
+                            <option value="major">Major</option>
+                            <option value="minor">Minor</option>
+                            <option value="diminished">Diminished</option>
+                            <option value="augmented">Augmented</option>
+                            <option value="sus2">Sus2</option>
+                            <option value="sus4">Sus4</option>
+                            <option value="power5">5 (Power Chord)</option>
+                            <option value="major6">Major 6th</option>
+                            <option value="minor6">Minor 6th</option>
+                            <option value="major7">Major 7th</option>
+                            <option value="minor7">Minor 7th</option>
+                            <option value="dominant7">Dominant 7th</option>
+                            <option value="diminished7">Diminished 7th</option>
+                            <option value="7sus4">7sus4</option>
+                            <option value="minor7b5">Minor 7th ♭5</option>
+                            <option value="7b5">7th ♭5</option>
+                            <option value="7b9">7th ♭9</option>
+                            <option value="7sharp9">7th ♯9</option>
+                            <option value="major9">Major 9th</option>
+                            <option value="minor9">Minor 9th</option>
+                            <option value="dominant9">Dominant 9th</option>
+                            <option value="add9">Add9</option>
+                            <option value="6add9">6/9</option>
+                            <option value="major11">Major 11th</option>
+                            <option value="minor11">Minor 11th</option>
+                            <option value="dominant11">Dominant 11th</option>
+                            <option value="major13">Major 13th</option>
+                            <option value="minor13">Minor 13th</option>
+                            <option value="dominant13">Dominant 13th</option>
+                        </select>
+                    </div>
+
+                    <div class="chord-selector-info">
+                        <div class="chord-selector-notes" id="chord-notes-3">Notes: C, E, G</div>
+                    </div>
+                </div>
+
+                <div class="chord-selector-buttons">
+                    <button id="play-chord-3-fast" class="play-chord-btn">▶ Fast</button>
+                    <button id="play-chord-3-slow" class="play-chord-btn">▶ Slow</button>
+                    <button id="remove-chord-3-btn" class="remove-chord-btn">−</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Chord Button (below all selectors) -->
+        <div class="add-chord-btn-container" id="add-chord-btn-container">
+            <button id="add-chord-btn" class="add-chord-btn">+ Add Chord</button>
         </div>
 
         <div class="dulcimer-container" id="dulcimer">
@@ -761,6 +1192,13 @@
         };
 
         const markerOffset = 6; // pixels to center markers on strings
+
+        // Multi-chord state tracking (up to 3 chords)
+        const chordStates = [
+            { root: 'C', type: 'major', notes: [], active: true },   // Chord 1 (Green) - always active
+            { root: 'C', type: 'major', notes: [], active: false },  // Chord 2 (Blue)
+            { root: 'C', type: 'major', notes: [], active: false }   // Chord 3 (Orange)
+        ];
 
         // Available soundfonts from soundfont-player library
         // Organized by category for better UX
@@ -1501,6 +1939,10 @@
                     console.log('AudioContext resumed successfully');
                 } catch (error) {
                     console.error('Failed to resume AudioContext:', error);
+                    // Only show overlay for iOS devices
+                    if (isIOS()) {
+                        showAudioInitOverlay();
+                    }
                 }
             }
             
@@ -1556,16 +1998,12 @@
         }
 
         async function unlockAudio() {
-            console.log('[DEBUG] unlockAudio called - creating AudioContext in user gesture...');
-            
             // FORCE create a new AudioContext in this user gesture
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             console.log('[DEBUG] New AudioContext created, initial state:', audioContext.state);
             
             // MUST resume on iOS - this is critical
-            console.log('[DEBUG] Calling resume()...');
             await audioContext.resume();
-            console.log('[DEBUG] After resume(), state:', audioContext.state);
             
             // Verify it's actually running
             if (audioContext.state !== 'running') {
@@ -1588,7 +2026,6 @@
             
             // Mark as unlocked
             audioUnlocked = true;
-            console.log('[DEBUG] Audio unlocked successfully');
             
             // Now load soundfont
             await initAudio(true);
@@ -1632,8 +2069,6 @@
                 return;
             }
             
-            console.log(`[DEBUG] Playing oscillator at ${frequency}Hz, context state: ${audioContext.state}`);
-            
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             
@@ -1646,10 +2081,8 @@
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
             
-            console.log(`[DEBUG] Oscillator starting at ${audioContext.currentTime}, stopping at ${audioContext.currentTime + duration}`);
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + duration);
-            console.log('[DEBUG] Oscillator start/stop commands issued');
             
             activeOscillators.push(oscillator);
             
@@ -1660,46 +2093,37 @@
         }
 
         async function playNote(noteName, duration = 1.0) {
-            console.log(`[DEBUG] playNote called for ${noteName}`);
             
             // Try to auto-initialize on first play if not yet unlocked
             if (!audioUnlocked && !audioContext) {
-                console.log('[DEBUG] First play attempt, trying to auto-unlock...');
                 try {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     await audioContext.resume();
                     
                     if (audioContext.state === 'running') {
                         // Success! Desktop browser
-                        console.log('[DEBUG] Audio auto-unlocked on first play');
                         audioUnlocked = true;
                         // Start loading soundfont
                         initAudio();
                     } else {
                         // Failed - need user gesture (iOS/mobile)
-                        console.log('[DEBUG] Auto-unlock failed, showing overlay');
                         showAudioInitOverlay();
                         return;
                     }
                 } catch (error) {
-                    console.log('[DEBUG] Auto-unlock error, showing overlay:', error);
                     showAudioInitOverlay();
                     return;
                 }
             } else if (!audioUnlocked) {
                 // Audio exists but not unlocked - show overlay
-                console.log('[DEBUG] Audio not unlocked, showing overlay');
                 showAudioInitOverlay();
                 return;
             }
             
             // Initialize audio if not already done
             if (!audioContext) {
-                console.log('[DEBUG] Creating AudioContext...');
                 await initAudio();
             }
-            
-            console.log('[DEBUG] AudioContext state:', audioContext ? audioContext.state : 'null');
             
             // If soundfont is still loading, wait for it to finish
             if (isLoadingInstrument) {
@@ -1730,12 +2154,10 @@
                         }
                     }
                     
-                    console.log(`[DEBUG] Attempting to play ${processedNote} via soundfont, context state: ${audioContext.state}`);
                     soundfontPlayer.play(processedNote, audioContext.currentTime, {
                         duration: duration,
                         gain: config.note_gain  // Volume (0.0 to 1.0)
                     });
-                    console.log(`[DEBUG] Soundfont play command sent for ${processedNote}`);
                 } catch (error) {
                     console.error(`Error playing note ${noteName} with soundfont, falling back to oscillator:`, error);
                     playNoteWithOscillator(noteName, duration);
@@ -1901,7 +2323,7 @@
                 const spacer = document.createElement('div');
                 spacer.className = 'string-spacer';
                 spacer.style.height = 'var(--string-height)';
-                spacer.style.width = '50px';
+                spacer.style.width = '65px';
                 spacer.style.visibility = 'hidden';
                 return spacer;
             }
@@ -1931,45 +2353,93 @@
             return intervals.map(interval => noteNames[(rootIndex + interval) % 12]);
         }
 
-        function highlightChord() {
-            const root = document.getElementById('root-note').value;
-            const type = document.getElementById('chord-type').value;
-            const chordNotes = getChordNotes(root, type);
+        function updateChordDisplay(chordIndex) {
+            const chordState = chordStates[chordIndex];
             
-            // Update chord info
-            const chordName = root + ' ' + type.charAt(0).toUpperCase() + type.slice(1).replace(/(\d)/g, ' $1');
-            document.getElementById('chord-name').textContent = chordName;
-            document.getElementById('chord-notes').textContent = 'Notes: ' + chordNotes.join(', ');
-            
+            document.getElementById(`chord-notes-${chordIndex + 1}`).textContent = 'Notes: ' + chordState.notes.join(', ');
+        }
+
+        function updateAllHighlights() {
             // If no instrument selected, skip highlighting
             if (!currentInstrument) {
                 return;
             }
             
-            // Clear all highlights
+            // Count how many chords are active
+            const activeChordCount = chordStates.filter(c => c.active).length;
+            
+            // Clear all chord-related classes
             document.querySelectorAll('.string').forEach(string => {
-                string.classList.remove('active');
-                // Always show full note name with octave
-                const fullNote = string.dataset.note;
-                string.querySelector('.note-label').textContent = fullNote;
+                string.className = 'string'; // Reset to base class
             });
             
-            // Highlight all matching notes across all octaves
+            // For each string, check membership in active chords
             document.querySelectorAll('.string').forEach(string => {
                 const noteName = string.dataset.note.replace(/\d/, '');
-                // Check for exact match or enharmonic equivalent
-                const isMatch = chordNotes.includes(noteName) || 
-                               (enharmonicMap[noteName] && chordNotes.includes(enharmonicMap[noteName]));
-                if (isMatch) {
-                    string.classList.add('active');
-                    // Note label already shows full note with octave
+                const memberChords = [];
+                
+                // Check each active chord
+                chordStates.forEach((chordState, index) => {
+                    if (chordState.active) {
+                        const isMatch = chordState.notes.includes(noteName) || 
+                                       (enharmonicMap[noteName] && chordState.notes.includes(enharmonicMap[noteName]));
+                        if (isMatch) {
+                            memberChords.push(index + 1); // 1-indexed for CSS classes
+                        }
+                    }
+                });
+                
+                // Apply appropriate CSS class based on membership and active chord count
+                if (memberChords.length === 0) {
+                    // No chords match, leave as default
+                    return;
+                }
+                
+                if (activeChordCount === 1) {
+                    // Only one chord active - full color
+                    string.classList.add(`chord-${memberChords[0]}`);
+                } else if (activeChordCount === 2) {
+                    // Two chords active - use 1/4 segments
+                    if (memberChords.length === 1) {
+                        string.classList.add(`chord-${memberChords[0]}-only-of-2`);
+                    } else if (memberChords.length === 2) {
+                        string.classList.add(`chord-${memberChords[0]}-${memberChords[1]}-of-2`);
+                    }
+                } else if (activeChordCount === 3) {
+                    // Three chords active - use 1/4 segments
+                    if (memberChords.length === 1) {
+                        string.classList.add(`chord-${memberChords[0]}-only-of-3`);
+                    } else if (memberChords.length === 2) {
+                        string.classList.add(`chord-${memberChords[0]}-${memberChords[1]}-of-3`);
+                    } else if (memberChords.length === 3) {
+                        string.classList.add('chord-1-2-3-of-3');
+                    }
                 }
             });
         }
 
-        async function playChord(delayMs = 50) {
-            const activeStrings = document.querySelectorAll('.string.active');
-            const allNotes = Array.from(activeStrings).map(s => s.dataset.note);
+        function highlightChord(chordIndex) {
+            const chordState = chordStates[chordIndex];
+            chordState.notes = getChordNotes(chordState.root, chordState.type);
+            
+            // Update chord display
+            updateChordDisplay(chordIndex);
+            
+            // Update all string highlights
+            updateAllHighlights();
+        }
+
+        async function playChord(chordIndex, delayMs = 50) {
+            // Get strings that belong to this specific chord
+            const chordClassName = `chord-${chordIndex + 1}`;
+            const allStrings = document.querySelectorAll('.string');
+            const chordStrings = Array.from(allStrings).filter(string => {
+                // Check if this string has the chord class (alone or in combination)
+                return string.classList.contains(chordClassName) ||
+                       Array.from(string.classList).some(cls => cls.includes(`chord-`) && cls.includes(`${chordIndex + 1}`));
+            });
+            
+            const allNotes = chordStrings.map(s => s.dataset.note);
             
             // Get unique notes (only one instance of each specific note with octave)
             const uniqueNotes = [...new Set(allNotes)];
@@ -1993,12 +2463,100 @@
             });
         }
 
-        async function playChordFast() {
-            await playChord(100); // 50ms delay between notes
+        async function playChordFast(chordIndex) {
+            await playChord(chordIndex, 100);
         }
 
-        async function playChordSlow() {
-            await playChord(500); // 500ms delay between notes
+        async function playChordSlow(chordIndex) {
+            await playChord(chordIndex, 500);
+        }
+
+        // Show/Hide chord selector functions
+        function showChordSelector(index) {
+            const selector = document.querySelector(`.chord-selector[data-chord-index="${index}"]`);
+            if (selector) {
+                selector.classList.remove('hidden');
+                chordStates[index].active = true;
+                setSavedValue(`chord${index + 1}Active`, 'true');
+                highlightChord(index);
+                
+                // Update + button visibility
+                updateAddButtonVisibility();
+            }
+        }
+
+        function hideChordSelector(index) {
+            // Don't allow hiding if this is the only active chord
+            const activeCount = chordStates.filter(c => c.active).length;
+            if (activeCount <= 1) {
+                return;
+            }
+            
+            // Get list of active chord indices
+            const activeIndices = chordStates
+                .map((c, i) => c.active ? i : -1)
+                .filter(i => i !== -1);
+            
+            // Find position of this chord in the active list
+            const positionInActiveList = activeIndices.indexOf(index);
+            
+            if (positionInActiveList === -1) {
+                return; // Chord is already inactive
+            }
+            
+            // Shift chords after this one up
+            for (let i = positionInActiveList; i < activeIndices.length - 1; i++) {
+                const currentIndex = activeIndices[i];
+                const nextIndex = activeIndices[i + 1];
+                
+                // Copy state from next chord to current chord
+                chordStates[currentIndex].root = chordStates[nextIndex].root;
+                chordStates[currentIndex].type = chordStates[nextIndex].type;
+                chordStates[currentIndex].notes = chordStates[nextIndex].notes;
+                
+                // Update UI for current chord
+                document.getElementById(`root-note-${currentIndex + 1}`).value = chordStates[currentIndex].root;
+                document.getElementById(`chord-type-${currentIndex + 1}`).value = chordStates[currentIndex].type;
+                updateChordDisplay(currentIndex);
+            }
+            
+            // Deactivate the last active chord
+            const lastActiveIndex = activeIndices[activeIndices.length - 1];
+            chordStates[lastActiveIndex].active = false;
+            setSavedValue(`chord${lastActiveIndex + 1}Active`, 'false');
+            
+            const selector = document.querySelector(`.chord-selector[data-chord-index="${lastActiveIndex}"]`);
+            if (selector) {
+                selector.classList.add('hidden');
+            }
+            
+            // Update all highlights
+            updateAllHighlights();
+            
+            // Update button visibility
+            updateAddButtonVisibility();
+        }
+
+        function updateAddButtonVisibility() {
+            const addBtnContainer = document.getElementById('add-chord-btn-container');
+            
+            // Count active chords
+            const activeCount = chordStates.filter(c => c.active).length;
+            
+            // Hide + button if all 3 chords are active
+            if (activeCount >= 3) {
+                addBtnContainer.classList.add('hidden');
+            } else {
+                addBtnContainer.classList.remove('hidden');
+            }
+            
+            // Update remove button states - disable if only 1 chord is active
+            for (let i = 0; i < 3; i++) {
+                const removeBtn = document.getElementById(`remove-chord-${i + 1}-btn`);
+                if (removeBtn) {
+                    removeBtn.disabled = (activeCount <= 1);
+                }
+            }
         }
 
         // Validate instrument configuration
@@ -2092,16 +2650,68 @@
         }
 
         // Event listeners
-        document.getElementById('root-note').addEventListener('change', (e) => {
-            setSavedValue('selectedRootNote', e.target.value);
-            highlightChord();
+        // Chord 1 (always visible)
+        document.getElementById('root-note-1').addEventListener('change', (e) => {
+            chordStates[0].root = e.target.value;
+            setSavedValue('selectedRootNote1', e.target.value);
+            highlightChord(0);
         });
-        document.getElementById('chord-type').addEventListener('change', (e) => {
-            setSavedValue('selectedChordType', e.target.value);
-            highlightChord();
+        document.getElementById('chord-type-1').addEventListener('change', (e) => {
+            chordStates[0].type = e.target.value;
+            setSavedValue('selectedChordType1', e.target.value);
+            highlightChord(0);
         });
-        document.getElementById('play-chord-fast').addEventListener('click', playChordFast);
-        document.getElementById('play-chord-slow').addEventListener('click', playChordSlow);
+        document.getElementById('play-chord-1-fast').addEventListener('click', () => playChordFast(0));
+        document.getElementById('play-chord-1-slow').addEventListener('click', () => playChordSlow(0));
+
+        // Chord 2
+        document.getElementById('root-note-2').addEventListener('change', (e) => {
+            chordStates[1].root = e.target.value;
+            setSavedValue('selectedRootNote2', e.target.value);
+            highlightChord(1);
+        });
+        document.getElementById('chord-type-2').addEventListener('change', (e) => {
+            chordStates[1].type = e.target.value;
+            setSavedValue('selectedChordType2', e.target.value);
+            highlightChord(1);
+        });
+        document.getElementById('play-chord-2-fast').addEventListener('click', () => playChordFast(1));
+        document.getElementById('play-chord-2-slow').addEventListener('click', () => playChordSlow(1));
+
+        // Chord 3
+        document.getElementById('root-note-3').addEventListener('change', (e) => {
+            chordStates[2].root = e.target.value;
+            setSavedValue('selectedRootNote3', e.target.value);
+            highlightChord(2);
+        });
+        document.getElementById('chord-type-3').addEventListener('change', (e) => {
+            chordStates[2].type = e.target.value;
+            setSavedValue('selectedChordType3', e.target.value);
+            highlightChord(2);
+        });
+        document.getElementById('play-chord-3-fast').addEventListener('click', () => playChordFast(2));
+        document.getElementById('play-chord-3-slow').addEventListener('click', () => playChordSlow(2));
+
+        // Add chord button
+        document.getElementById('add-chord-btn').addEventListener('click', () => {
+            // Find first inactive chord and show it
+            const inactiveIndex = chordStates.findIndex(c => !c.active);
+            if (inactiveIndex !== -1) {
+                showChordSelector(inactiveIndex);
+            }
+        });
+
+        // Remove chord buttons
+        document.getElementById('remove-chord-1-btn').addEventListener('click', () => {
+            hideChordSelector(0);
+        });
+        document.getElementById('remove-chord-2-btn').addEventListener('click', () => {
+            hideChordSelector(1);
+        });
+        document.getElementById('remove-chord-3-btn').addEventListener('click', () => {
+            hideChordSelector(2);
+        });
+
         document.getElementById('instrument-select').addEventListener('change', (e) => {
             const selectedValue = e.target.value;
             
@@ -2134,7 +2744,7 @@
             currentInstrument = selectedInstrument;
             setSavedValue('selectedInstrument', selectedValue);
             buildDulcimer();
-            highlightChord();
+            updateAllHighlights();
         });
 
         // Rebuild dulcimer on window resize to adjust marker positions
@@ -2143,7 +2753,7 @@
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 buildDulcimer();
-                highlightChord();
+                updateAllHighlights();
             }, 250);
         });
 
@@ -2165,32 +2775,65 @@
         
         populateInstrumentSelector();
         
-        // Restore saved root note and chord type
-        const savedRootNote = getSavedValue('selectedRootNote');
-        if (savedRootNote) {
-            const rootNoteSelect = document.getElementById('root-note');
-            // Check if the saved value is valid
-            const option = Array.from(rootNoteSelect.options).find(opt => opt.value === savedRootNote);
-            if (option) {
-                rootNoteSelect.value = savedRootNote;
+        // Restore saved chord states for all 3 chords
+        for (let i = 0; i < 3; i++) {
+            const chordNum = i + 1;
+            
+            // Restore root note
+            const savedRootNote = getSavedValue(`selectedRootNote${chordNum}`);
+            if (savedRootNote) {
+                const rootNoteSelect = document.getElementById(`root-note-${chordNum}`);
+                const option = Array.from(rootNoteSelect.options).find(opt => opt.value === savedRootNote);
+                if (option) {
+                    rootNoteSelect.value = savedRootNote;
+                    chordStates[i].root = savedRootNote;
+                }
             }
-        }
-        
-        const savedChordType = getSavedValue('selectedChordType');
-        if (savedChordType) {
-            const chordTypeSelect = document.getElementById('chord-type');
-            // Check if the saved value is valid
-            const option = Array.from(chordTypeSelect.options).find(opt => opt.value === savedChordType);
-            if (option) {
-                chordTypeSelect.value = savedChordType;
+            
+            // Restore chord type
+            const savedChordType = getSavedValue(`selectedChordType${chordNum}`);
+            if (savedChordType) {
+                const chordTypeSelect = document.getElementById(`chord-type-${chordNum}`);
+                const option = Array.from(chordTypeSelect.options).find(opt => opt.value === savedChordType);
+                if (option) {
+                    chordTypeSelect.value = savedChordType;
+                    chordStates[i].type = savedChordType;
+                }
             }
+            
+            // Restore active state (chord 1 is always active)
+            if (i > 0) {
+                const savedActive = getSavedValue(`chord${chordNum}Active`);
+                if (savedActive === 'true') {
+                    chordStates[i].active = true;
+                    const selector = document.querySelector(`.chord-selector[data-chord-index="${i}"]`);
+                    if (selector) {
+                        selector.classList.remove('hidden');
+                    }
+                }
+            }
+            
+            // Calculate notes for this chord
+            chordStates[i].notes = getChordNotes(chordStates[i].root, chordStates[i].type);
+            
+            // Update chord display
+            updateChordDisplay(i);
         }
         
         buildDulcimer();
-        highlightChord();
+        updateAllHighlights();
+        updateAddButtonVisibility();
+
+        // Detect if running on iOS
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
 
         // Try to auto-unlock audio on page load (works on desktop, requires user gesture on iOS)
         (async function tryAutoUnlock() {
+            const iOS = isIOS();
+            
             try {
                 const testContext = new (window.AudioContext || window.webkitAudioContext)();
                 await testContext.resume();
@@ -2205,9 +2848,19 @@
                 } else {
                     console.log('[DEBUG] Audio requires user interaction - mobile browser');
                     testContext.close();
+                    
+                    // Only show iOS overlay if actually on iOS
+                    if (iOS) {
+                        showAudioInitOverlay();
+                    }
                 }
             } catch (error) {
                 console.log('[DEBUG] Auto-unlock failed, will require user interaction:', error);
+                
+                // Only show iOS overlay if actually on iOS
+                if (iOS) {
+                    showAudioInitOverlay();
+                }
             }
         })();
 
@@ -2303,11 +2956,11 @@
             audioInitButton.addEventListener('click', unlockAudio);
         }
 
-        // Allow spacebar to play chord (fast)
+        // Allow spacebar to play chord 1 (fast)
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && e.target.tagName !== 'SELECT') {
                 e.preventDefault();
-                playChordFast();
+                playChordFast(0);
             }
         });
     </script>
