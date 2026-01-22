@@ -28,7 +28,7 @@
             --background-gradient-start: #667eea;
             --background-gradient-end: #764ba2;
             --container-bg: white;
-            --text-primary: #333;
+            --text-primary: #444;
             --text-secondary: #666;
             --text-tertiary: #888;
             --text-dark: #222;
@@ -44,6 +44,7 @@
             --string-default: #C0C0C0;
             --string-highlight: #E8E8E8;
             --footer-text: white;
+            --key-signature-border: #DAA520;  /* Golden border for key signature */
         }
 
         * {
@@ -508,9 +509,22 @@
         .note-label {
             position: absolute;
             font-size: 0.75rem;
-            color: var(--text-tertiary);
+            color: var(--text-secondary);
             bottom: 2px;
             opacity: 0.7;
+        }
+
+        /* Key signature highlighting */
+        .string.in-key-signature {
+            border: 3px solid var(--key-signature-border);
+            box-shadow: 0 0 4px 1px var(--key-signature-border);
+            box-sizing: border-box;
+        }
+
+        .string.in-key-signature .note-label {
+            color: var(--text-primary);
+            font-weight: bold;
+            bottom: 0px;
         }
 
         @media (max-width: 768px) {
@@ -529,13 +543,18 @@
                 gap: 10px;
             }
 
+            .instrument-controls .control-group {
+                flex: 0 1 auto;
+                min-width: 0;
+            }
+
+            .instrument-controls .control-group:first-child {
+                flex: 1 1 100%;
+            }
+
             .control-group {
                 flex: 1 1 calc(50% - 5px);
                 min-width: 150px;
-            }
-
-            .control-group:first-child {
-                flex: 1 1 100%;
             }
 
             select, button {
@@ -930,7 +949,23 @@
             </div>
 
             <div class="control-group">
-                <label for="sound-bank-select">Sound Bank</label>
+                <label for="sharp-flat-select">♭/♯</label>
+                <select id="sharp-flat-select">
+                    <option value="sharp">♯</option>
+                    <option value="flat">♭</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="key-signature-select">Key Sig</label>
+                <select id="key-signature-select">
+                    <option value="none">None</option>
+                    <!-- Populated by JavaScript -->
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="sound-bank-select">Sound</label>
                 <div class="control-group-with-button">
                     <button id="sound-bank-button" class="sound-bank-button" title="Change Sound Bank">🎵</button>
                 </div>
@@ -1195,7 +1230,7 @@
 
         // Multi-chord state tracking (up to 3 chords)
         const chordStates = [
-            { root: 'C', type: 'major', notes: [], active: true },   // Chord 1 (Green) - always active
+            { root: 'C', type: 'major', notes: [], active: true },   // Chord 1 (Green)
             { root: 'C', type: 'major', notes: [], active: false },  // Chord 2 (Blue)
             { root: 'C', type: 'major', notes: [], active: false }   // Chord 3 (Orange)
         ];
@@ -1853,6 +1888,96 @@
         };
         // Get current instrument
         let currentInstrument = null;
+        
+        // User preferences
+        let sharpFlatPreference = 'sharp'; // 'sharp' or 'flat'
+        let selectedKeySignature = 'none'; // Key signature selection
+
+        // Note display conversion based on sharp/flat preference
+        function convertNoteDisplay(note) {
+            // Extract note name without octave
+            const noteName = note.replace(/\d/g, '');
+            const octave = note.match(/\d/g) ? note.match(/\d/g).join('') : '';
+            
+            if (sharpFlatPreference === 'flat') {
+                // Convert sharps to flats
+                const flatMap = {
+                    'C#': 'Db',
+                    'D#': 'Eb',
+                    'F#': 'Gb',
+                    'G#': 'Ab',
+                    'A#': 'Bb'
+                };
+                return (flatMap[noteName] || noteName) + octave;
+            } else {
+                // Convert flats to sharps
+                const sharpMap = {
+                    'Db': 'C#',
+                    'Eb': 'D#',
+                    'Gb': 'F#',
+                    'Ab': 'G#',
+                    'Bb': 'A#'
+                };
+                return (sharpMap[noteName] || noteName) + octave;
+            }
+        }
+
+        // Key signature definitions (notes in each key)
+        const keySignatures = {
+            // Major keys
+            'C Major': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+            'G Major': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
+            'D Major': ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
+            'A Major': ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
+            'E Major': ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'],
+            'B Major': ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
+            'F# Major': ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#'],
+            'C# Major': ['C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#'],
+            'F Major': ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
+            'Bb Major': ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'],
+            'Eb Major': ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'],
+            'Ab Major': ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'],
+            'Db Major': ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'],
+            'Gb Major': ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'],
+            'Cb Major': ['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb'],
+            // Minor keys
+            'A Minor': ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+            'E Minor': ['E', 'F#', 'G', 'A', 'B', 'C', 'D'],
+            'B Minor': ['B', 'C#', 'D', 'E', 'F#', 'G', 'A'],
+            'F# Minor': ['F#', 'G#', 'A', 'B', 'C#', 'D', 'E'],
+            'C# Minor': ['C#', 'D#', 'E', 'F#', 'G#', 'A', 'B'],
+            'G# Minor': ['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F#'],
+            'D# Minor': ['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C#'],
+            'A# Minor': ['A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G#'],
+            'D Minor': ['D', 'E', 'F', 'G', 'A', 'Bb', 'C'],
+            'G Minor': ['G', 'A', 'Bb', 'C', 'D', 'Eb', 'F'],
+            'C Minor': ['C', 'D', 'Eb', 'F', 'G', 'Ab', 'Bb'],
+            'F Minor': ['F', 'G', 'Ab', 'Bb', 'C', 'Db', 'Eb'],
+            'Bb Minor': ['Bb', 'C', 'Db', 'Eb', 'F', 'Gb', 'Ab'],
+            'Eb Minor': ['Eb', 'F', 'Gb', 'Ab', 'Bb', 'Cb', 'Db'],
+            'Ab Minor': ['Ab', 'Bb', 'Cb', 'Db', 'Eb', 'Fb', 'Gb']
+        };
+
+        // Check if a note is in the selected key signature
+        function isNoteInKeySignature(note) {
+            if (selectedKeySignature === 'none') return false;
+            
+            // Extract note name without octave (handle both formats like "C#4" and "C#")
+            const noteName = note.replace(/\d+/g, '');
+            const keyNotes = keySignatures[selectedKeySignature];
+            
+            if (!keyNotes) return false;
+            
+            // Check if note is in key
+            if (keyNotes.includes(noteName)) return true;
+            
+            // Check enharmonic equivalents
+            if (enharmonicMap[noteName]) {
+                return keyNotes.includes(enharmonicMap[noteName]);
+            }
+            
+            return false;
+        }
 
         // localStorage works with file:// protocol, unlike cookies
         function getSavedValue(key) {
@@ -1914,6 +2039,35 @@
             requestOption.textContent = 'Request an instrument layout...';
             requestOption.className = 'request-layout-option';
             select.appendChild(requestOption);
+        }
+
+        function populateKeySignatureSelector() {
+            const select = document.getElementById('key-signature-select');
+            select.innerHTML = '<option value="none">None</option>';
+            
+            // Add major keys
+            const majorKeys = ['C Major', 'G Major', 'D Major', 'A Major', 'E Major', 'B Major', 
+                              'F# Major', 'C# Major', 'F Major', 'Bb Major', 'Eb Major', 
+                              'Ab Major', 'Db Major', 'Gb Major', 'Cb Major'];
+            
+            majorKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = key;
+                select.appendChild(option);
+            });
+            
+            // Add minor keys
+            const minorKeys = ['A Minor', 'E Minor', 'B Minor', 'F# Minor', 'C# Minor', 'G# Minor',
+                              'D# Minor', 'A# Minor', 'D Minor', 'G Minor', 'C Minor', 
+                              'F Minor', 'Bb Minor', 'Eb Minor', 'Ab Minor'];
+            
+            minorKeys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = key;
+                select.appendChild(option);
+            });
         }
 
        
@@ -2334,10 +2488,15 @@
             string.dataset.bridge = bridge;
             string.dataset.index = index;
             
+            // Add key signature class if note is in selected key
+            if (isNoteInKeySignature(note)) {
+                string.classList.add('in-key-signature');
+            }
+            
             const label = document.createElement('div');
             label.className = 'note-label';
-            // Show full note name with octave (e.g., "C#4" instead of just "C#")
-            label.textContent = note;
+            // Convert note display based on sharp/flat preference
+            label.textContent = convertNoteDisplay(note);
             string.appendChild(label);
             
             string.addEventListener('click', async () => {
@@ -2368,9 +2527,13 @@
             // Count how many chords are active
             const activeChordCount = chordStates.filter(c => c.active).length;
             
-            // Clear all chord-related classes
+            // Clear all chord-related classes but preserve in-key-signature class
             document.querySelectorAll('.string').forEach(string => {
+                const hasKeySignature = string.classList.contains('in-key-signature');
                 string.className = 'string'; // Reset to base class
+                if (hasKeySignature) {
+                    string.classList.add('in-key-signature');
+                }
             });
             
             // For each string, check membership in active chords
@@ -2486,12 +2649,6 @@
         }
 
         function hideChordSelector(index) {
-            // Don't allow hiding if this is the only active chord
-            const activeCount = chordStates.filter(c => c.active).length;
-            if (activeCount <= 1) {
-                return;
-            }
-            
             // Get list of active chord indices
             const activeIndices = chordStates
                 .map((c, i) => c.active ? i : -1)
@@ -2550,11 +2707,11 @@
                 addBtnContainer.classList.remove('hidden');
             }
             
-            // Update remove button states - disable if only 1 chord is active
+            // All remove buttons are always enabled (allow removing all chords)
             for (let i = 0; i < 3; i++) {
                 const removeBtn = document.getElementById(`remove-chord-${i + 1}-btn`);
                 if (removeBtn) {
-                    removeBtn.disabled = (activeCount <= 1);
+                    removeBtn.disabled = false;
                 }
             }
         }
@@ -2712,6 +2869,26 @@
             hideChordSelector(2);
         });
 
+        // Sharp/Flat selector
+        document.getElementById('sharp-flat-select').addEventListener('change', (e) => {
+            sharpFlatPreference = e.target.value;
+            setSavedValue('sharpFlatPreference', sharpFlatPreference);
+            
+            // Rebuild the dulcimer to update all note labels
+            buildDulcimer();
+            updateAllHighlights();
+        });
+
+        // Key Signature selector
+        document.getElementById('key-signature-select').addEventListener('change', (e) => {
+            selectedKeySignature = e.target.value;
+            setSavedValue('selectedKeySignature', selectedKeySignature);
+            
+            // Rebuild the dulcimer to update key signature highlighting
+            buildDulcimer();
+            updateAllHighlights();
+        });
+
         document.getElementById('instrument-select').addEventListener('change', (e) => {
             const selectedValue = e.target.value;
             
@@ -2759,6 +2936,27 @@
 
         // Initialize
         currentInstrument = getDefaultInstrument();
+        
+        // Restore sharp/flat preference
+        const savedSharpFlat = getSavedValue('sharpFlatPreference');
+        if (savedSharpFlat) {
+            sharpFlatPreference = savedSharpFlat;
+            document.getElementById('sharp-flat-select').value = sharpFlatPreference;
+        }
+        
+        // Restore key signature preference
+        const savedKeySignature = getSavedValue('selectedKeySignature');
+        if (savedKeySignature) {
+            selectedKeySignature = savedKeySignature;
+        }
+        
+        // Populate key signature selector
+        populateKeySignatureSelector();
+        
+        // Set the saved key signature selection
+        if (savedKeySignature) {
+            document.getElementById('key-signature-select').value = selectedKeySignature;
+        }
         
         // Note: Audio initialization is deferred until first user interaction
         // to avoid browser autoplay policy warnings. Audio will be initialized
