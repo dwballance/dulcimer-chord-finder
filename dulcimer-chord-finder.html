@@ -1902,23 +1902,27 @@
             if (sharpFlatPreference === 'flat') {
                 // Convert sharps to flats
                 const flatMap = {
-                    'C#': 'Db',
-                    'D#': 'Eb',
-                    'F#': 'Gb',
-                    'G#': 'Ab',
-                    'A#': 'Bb'
+                    'C#': 'D♭',
+                    'D#': 'E♭',
+                    'F#': 'G♭',
+                    'G#': 'A♭',
+                    'A#': 'B♭'
                 };
-                return (flatMap[noteName] || noteName) + octave;
+                const converted = flatMap[noteName] || noteName;
+                // Replace any remaining # with ♭ for display
+                return converted.replace(/#/g, '♯').replace(/b/g, '♭') + octave;
             } else {
                 // Convert flats to sharps
                 const sharpMap = {
-                    'Db': 'C#',
-                    'Eb': 'D#',
-                    'Gb': 'F#',
-                    'Ab': 'G#',
-                    'Bb': 'A#'
+                    'Db': 'C♯',
+                    'Eb': 'D♯',
+                    'Gb': 'F♯',
+                    'Ab': 'G♯',
+                    'Bb': 'A♯'
                 };
-                return (sharpMap[noteName] || noteName) + octave;
+                const converted = sharpMap[noteName] || noteName;
+                // Replace any remaining # with ♯ and b with ♭ for display
+                return converted.replace(/#/g, '♯').replace(/b/g, '♭') + octave;
             }
         }
 
@@ -1931,31 +1935,31 @@
             'A Major': ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
             'E Major': ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'],
             'B Major': ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
-            'F# Major': ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#'],
-            'C# Major': ['C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#'],
+            'F♯ Major': ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#'],
+            'C♯ Major': ['C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#'],
             'F Major': ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
-            'Bb Major': ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'],
-            'Eb Major': ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'],
-            'Ab Major': ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'],
-            'Db Major': ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'],
-            'Gb Major': ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'],
-            'Cb Major': ['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb'],
+            'B♭ Major': ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'],
+            'E♭ Major': ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'],
+            'A♭ Major': ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'],
+            'D♭ Major': ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'],
+            'G♭ Major': ['Gb', 'Ab', 'Bb', 'Cb', 'Db', 'Eb', 'F'],
+            'C♭ Major': ['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb'],
             // Minor keys
             'A Minor': ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
             'E Minor': ['E', 'F#', 'G', 'A', 'B', 'C', 'D'],
             'B Minor': ['B', 'C#', 'D', 'E', 'F#', 'G', 'A'],
-            'F# Minor': ['F#', 'G#', 'A', 'B', 'C#', 'D', 'E'],
-            'C# Minor': ['C#', 'D#', 'E', 'F#', 'G#', 'A', 'B'],
-            'G# Minor': ['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F#'],
-            'D# Minor': ['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C#'],
-            'A# Minor': ['A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G#'],
+            'F♯ Minor': ['F#', 'G#', 'A', 'B', 'C#', 'D', 'E'],
+            'C♯ Minor': ['C#', 'D#', 'E', 'F#', 'G#', 'A', 'B'],
+            'G♯ Minor': ['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F#'],
+            'D♯ Minor': ['D#', 'E#', 'F#', 'G#', 'A#', 'B', 'C#'],
+            'A♯ Minor': ['A#', 'B#', 'C#', 'D#', 'E#', 'F#', 'G#'],
             'D Minor': ['D', 'E', 'F', 'G', 'A', 'Bb', 'C'],
             'G Minor': ['G', 'A', 'Bb', 'C', 'D', 'Eb', 'F'],
             'C Minor': ['C', 'D', 'Eb', 'F', 'G', 'Ab', 'Bb'],
             'F Minor': ['F', 'G', 'Ab', 'Bb', 'C', 'Db', 'Eb'],
-            'Bb Minor': ['Bb', 'C', 'Db', 'Eb', 'F', 'Gb', 'Ab'],
-            'Eb Minor': ['Eb', 'F', 'Gb', 'Ab', 'Bb', 'Cb', 'Db'],
-            'Ab Minor': ['Ab', 'Bb', 'Cb', 'Db', 'Eb', 'Fb', 'Gb']
+            'B♭ Minor': ['Bb', 'C', 'Db', 'Eb', 'F', 'Gb', 'Ab'],
+            'E♭ Minor': ['Eb', 'F', 'Gb', 'Ab', 'Bb', 'Cb', 'Db'],
+            'A♭ Minor': ['Ab', 'Bb', 'Cb', 'Db', 'Eb', 'Fb', 'Gb']
         };
 
         // Check if a note is in the selected key signature
@@ -2047,8 +2051,8 @@
             
             // Add major keys
             const majorKeys = ['C Major', 'G Major', 'D Major', 'A Major', 'E Major', 'B Major', 
-                              'F# Major', 'C# Major', 'F Major', 'Bb Major', 'Eb Major', 
-                              'Ab Major', 'Db Major', 'Gb Major', 'Cb Major'];
+                              'F♯ Major', 'C♯ Major', 'F Major', 'B♭ Major', 'E♭ Major', 
+                              'A♭ Major', 'D♭ Major', 'G♭ Major', 'C♭ Major'];
             
             majorKeys.forEach(key => {
                 const option = document.createElement('option');
@@ -2058,9 +2062,9 @@
             });
             
             // Add minor keys
-            const minorKeys = ['A Minor', 'E Minor', 'B Minor', 'F# Minor', 'C# Minor', 'G# Minor',
-                              'D# Minor', 'A# Minor', 'D Minor', 'G Minor', 'C Minor', 
-                              'F Minor', 'Bb Minor', 'Eb Minor', 'Ab Minor'];
+            const minorKeys = ['A Minor', 'E Minor', 'B Minor', 'F♯ Minor', 'C♯ Minor', 'G♯ Minor',
+                              'D♯ Minor', 'A♯ Minor', 'D Minor', 'G Minor', 'C Minor', 
+                              'F Minor', 'B♭ Minor', 'E♭ Minor', 'A♭ Minor'];
             
             minorKeys.forEach(key => {
                 const option = document.createElement('option');
@@ -2515,7 +2519,10 @@
         function updateChordDisplay(chordIndex) {
             const chordState = chordStates[chordIndex];
             
-            document.getElementById(`chord-notes-${chordIndex + 1}`).textContent = 'Notes: ' + chordState.notes.join(', ');
+            // Convert notes to use sharp/flat symbols for display
+            const displayNotes = chordState.notes.map(note => note.replace(/#/g, '♯').replace(/b/g, '♭'));
+            
+            document.getElementById(`chord-notes-${chordIndex + 1}`).textContent = 'Notes: ' + displayNotes.join(', ');
         }
 
         function updateAllHighlights() {
@@ -2947,7 +2954,8 @@
         // Restore key signature preference
         const savedKeySignature = getSavedValue('selectedKeySignature');
         if (savedKeySignature) {
-            selectedKeySignature = savedKeySignature;
+            // Convert old format to new format with symbols
+            selectedKeySignature = savedKeySignature.replace(/#/g, '♯').replace(/b/g, '♭');
         }
         
         // Populate key signature selector
@@ -2955,7 +2963,8 @@
         
         // Set the saved key signature selection
         if (savedKeySignature) {
-            document.getElementById('key-signature-select').value = selectedKeySignature;
+            const convertedValue = savedKeySignature.replace(/#/g, '♯').replace(/b/g, '♭');
+            document.getElementById('key-signature-select').value = convertedValue;
         }
         
         // Note: Audio initialization is deferred until first user interaction
