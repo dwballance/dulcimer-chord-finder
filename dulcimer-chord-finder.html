@@ -2682,6 +2682,10 @@
                 document.getElementById(`root-note-${currentIndex + 1}`).value = chordStates[currentIndex].root;
                 document.getElementById(`chord-type-${currentIndex + 1}`).value = chordStates[currentIndex].type;
                 updateChordDisplay(currentIndex);
+                
+                // Save the shifted state to localStorage
+                setSavedValue(`selectedRootNote${currentIndex + 1}`, chordStates[currentIndex].root);
+                setSavedValue(`selectedChordType${currentIndex + 1}`, chordStates[currentIndex].type);
             }
             
             // Deactivate the last active chord
@@ -3008,15 +3012,21 @@
                 }
             }
             
-            // Restore active state (chord 1 is always active)
-            if (i > 0) {
-                const savedActive = getSavedValue(`chord${chordNum}Active`);
-                if (savedActive === 'true') {
-                    chordStates[i].active = true;
-                    const selector = document.querySelector(`.chord-selector[data-chord-index="${i}"]`);
-                    if (selector) {
-                        selector.classList.remove('hidden');
-                    }
+            // Restore active state (including chord 1)
+            const savedActive = getSavedValue(`chord${chordNum}Active`);
+            if (savedActive === 'false') {
+                // Explicitly set to inactive and hide
+                chordStates[i].active = false;
+                const selector = document.querySelector(`.chord-selector[data-chord-index="${i}"]`);
+                if (selector) {
+                    selector.classList.add('hidden');
+                }
+            } else if (savedActive === 'true' || i === 0) {
+                // Set to active (chord 1 defaults to active if no saved state)
+                chordStates[i].active = true;
+                const selector = document.querySelector(`.chord-selector[data-chord-index="${i}"]`);
+                if (selector) {
+                    selector.classList.remove('hidden');
                 }
             }
             
