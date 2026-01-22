@@ -45,6 +45,7 @@
             --string-highlight: #E8E8E8;
             --footer-text: white;
             --key-signature-border: #DAA520;  /* Golden border for key signature */
+            --key-signature-bg: #FFFFFF;      /* Darker gray background for key signature */
         }
 
         * {
@@ -516,6 +517,7 @@
 
         /* Key signature highlighting */
         .string.in-key-signature {
+            background: var(--key-signature-bg);
             border: 3px solid var(--key-signature-border);
             box-shadow: 0 0 4px 1px var(--key-signature-border);
             box-sizing: border-box;
@@ -2633,14 +2635,6 @@
             });
         }
 
-        async function playChordFast(chordIndex) {
-            await playChord(chordIndex, 100);
-        }
-
-        async function playChordSlow(chordIndex) {
-            await playChord(chordIndex, 500);
-        }
-
         // Show/Hide chord selector functions
         function showChordSelector(index) {
             const selector = document.querySelector(`.chord-selector[data-chord-index="${index}"]`);
@@ -2817,48 +2811,26 @@
             return { valid: true };
         }
 
-        // Event listeners
-        // Chord 1 (always visible)
-        document.getElementById('root-note-1').addEventListener('change', (e) => {
-            chordStates[0].root = e.target.value;
-            setSavedValue('selectedRootNote1', e.target.value);
-            highlightChord(0);
-        });
-        document.getElementById('chord-type-1').addEventListener('change', (e) => {
-            chordStates[0].type = e.target.value;
-            setSavedValue('selectedChordType1', e.target.value);
-            highlightChord(0);
-        });
-        document.getElementById('play-chord-1-fast').addEventListener('click', () => playChordFast(0));
-        document.getElementById('play-chord-1-slow').addEventListener('click', () => playChordSlow(0));
-
-        // Chord 2
-        document.getElementById('root-note-2').addEventListener('change', (e) => {
-            chordStates[1].root = e.target.value;
-            setSavedValue('selectedRootNote2', e.target.value);
-            highlightChord(1);
-        });
-        document.getElementById('chord-type-2').addEventListener('change', (e) => {
-            chordStates[1].type = e.target.value;
-            setSavedValue('selectedChordType2', e.target.value);
-            highlightChord(1);
-        });
-        document.getElementById('play-chord-2-fast').addEventListener('click', () => playChordFast(1));
-        document.getElementById('play-chord-2-slow').addEventListener('click', () => playChordSlow(1));
-
-        // Chord 3
-        document.getElementById('root-note-3').addEventListener('change', (e) => {
-            chordStates[2].root = e.target.value;
-            setSavedValue('selectedRootNote3', e.target.value);
-            highlightChord(2);
-        });
-        document.getElementById('chord-type-3').addEventListener('change', (e) => {
-            chordStates[2].type = e.target.value;
-            setSavedValue('selectedChordType3', e.target.value);
-            highlightChord(2);
-        });
-        document.getElementById('play-chord-3-fast').addEventListener('click', () => playChordFast(2));
-        document.getElementById('play-chord-3-slow').addEventListener('click', () => playChordSlow(2));
+        // Event listeners for all chords (consolidated loop)
+        for (let i = 0; i < 3; i++) {
+            const chordNum = i + 1;
+            
+            document.getElementById(`root-note-${chordNum}`).addEventListener('change', (e) => {
+                chordStates[i].root = e.target.value;
+                setSavedValue(`selectedRootNote${chordNum}`, e.target.value);
+                highlightChord(i);
+            });
+            
+            document.getElementById(`chord-type-${chordNum}`).addEventListener('change', (e) => {
+                chordStates[i].type = e.target.value;
+                setSavedValue(`selectedChordType${chordNum}`, e.target.value);
+                highlightChord(i);
+            });
+            
+            document.getElementById(`play-chord-${chordNum}-fast`).addEventListener('click', () => playChord(i, 100));
+            document.getElementById(`play-chord-${chordNum}-slow`).addEventListener('click', () => playChord(i, 500));
+            document.getElementById(`remove-chord-${chordNum}-btn`).addEventListener('click', () => hideChordSelector(i));
+        }
 
         // Add chord button
         document.getElementById('add-chord-btn').addEventListener('click', () => {
@@ -2867,17 +2839,6 @@
             if (inactiveIndex !== -1) {
                 showChordSelector(inactiveIndex);
             }
-        });
-
-        // Remove chord buttons
-        document.getElementById('remove-chord-1-btn').addEventListener('click', () => {
-            hideChordSelector(0);
-        });
-        document.getElementById('remove-chord-2-btn').addEventListener('click', () => {
-            hideChordSelector(1);
-        });
-        document.getElementById('remove-chord-3-btn').addEventListener('click', () => {
-            hideChordSelector(2);
         });
 
         // Sharp/Flat selector
