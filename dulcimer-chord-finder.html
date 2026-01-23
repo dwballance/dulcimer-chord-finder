@@ -959,7 +959,7 @@
             </div>
 
             <div class="control-group">
-                <label for="key-signature-select">Key Sig</label>
+                <label for="key-signature-select">Key Signature</label>
                 <select id="key-signature-select">
                     <option value="none">None</option>
                     <!-- Populated by JavaScript -->
@@ -1193,7 +1193,8 @@
 
     <div class="footer">
         Hammered Dulcimer Chord Finder v1.1.0 • Click strings to hear notes<br>
-        <a href="${config.googleFormUrl}" 
+        <a href="#" 
+           id="request-layout-link"
            target="_blank" 
            rel="noopener noreferrer"
            class="footer-link">
@@ -1202,7 +1203,7 @@
            target="_blank"
            rel="noopener noreferrer" 
            class="footer-link">
-            Report Bug</a>
+            Report Bug (needs Github account)</a>
         • <a href="https://github.com/dwballance/Dulcimer-Chord-Finder" 
            target="_blank"
            rel="noopener noreferrer" 
@@ -3138,9 +3139,15 @@
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && e.target.tagName !== 'SELECT') {
                 e.preventDefault();
-                playChordFast(0);
+                playChord(0, 100);
             }
         });
+
+        // Set footer link href from config
+        const requestLayoutLink = document.getElementById('request-layout-link');
+        if (requestLayoutLink && config.googleFormUrl) {
+            requestLayoutLink.href = config.googleFormUrl;
+        }
     </script>
 
     <!-- Sound Bank Modal -->
